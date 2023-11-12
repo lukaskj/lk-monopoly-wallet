@@ -1,0 +1,1 @@
+{"version":3,"file":"bigint-transform-fix.js","sourceRoot":"","sources":["../../src/common/bigint-transform-fix.ts"],"names":[],"mappings":";AACC,MAAM,CAAC,SAAiB,CAAC,MAAM,GAAG;IACjC,MAAM,GAAG,GAAG,MAAM,CAAC,QAAQ,CAAC,IAAI,CAAC,QAAQ,EAAE,CAAC,CAAC;IAC7C,OAAO,GAAG,IAAI,IAAI,CAAC,QAAQ,EAAE,CAAC;AAChC,CAAC,CAAC"}
