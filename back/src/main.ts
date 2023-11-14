@@ -6,7 +6,7 @@ import { ValidationErrorExceptionFilter } from "./common/filters/validation-erro
 import { LoggingInterceptor } from "./common/interceptors/logging-interceptor";
 import * as dotenv from "dotenv";
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   dotenv.config();
   const app = await NestFactory.create(AppModule);
   app.enableCors();
