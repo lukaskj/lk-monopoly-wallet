@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "@database/prisma.service";
 import { CreateGameDto } from "../../dto/create-game.dto";
 import { Game } from "@prisma/client";
 import { PlayerService } from "../player/player.service";
+import { isNullOrUndefined } from "../../../../common/helpers/is-null-or-undefined";
 
 @Injectable()
 export class GameService {
@@ -35,5 +36,19 @@ export class GameService {
         players: true,
       },
     })) as Game;
+  }
+
+  public async getGameById(id: number): Promise<Game> {
+    const game = await this.prismaService.game.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (isNullOrUndefined(game)) {
+      throw new NotFoundException();
+    }
+
+    return game;
   }
 }
