@@ -29,6 +29,7 @@ module.exports = {
     "!database/migrations/*.ts",
     "!database/ormconfig.ts",
     "!**/main.ts",
+    "!**/*.fixture.ts",
     "!**/*.module.ts",
     "!**/node_modules/**",
     "!**/vendor/**",

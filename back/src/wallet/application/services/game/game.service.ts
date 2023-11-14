@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "@database/prisma.service";
 import { CreateGameDto } from "../../dto/create-game.dto";
 import { Game } from "@prisma/client";
@@ -13,6 +13,10 @@ export class GameService {
   ) {}
 
   public async createGame(createGame: CreateGameDto): Promise<Game> {
+    if (createGame.players.length < 2) {
+      throw new BadRequestException("Minimum players: 2");
+    }
+
     const game = await this.prismaService.game.create({
       data: {
         name: createGame.name,
