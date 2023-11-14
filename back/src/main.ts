@@ -1,17 +1,19 @@
 import { ClassSerializerInterceptor, ValidationPipe } from "@nestjs/common";
 import { NestFactory, Reflector } from "@nestjs/core";
+import * as dotenv from "dotenv";
 import { AppModule } from "./app.module";
 import "./common/bigint-transform-fix";
-import { ValidationErrorExceptionFilter } from "./common/filters/validation-error-exception-filter";
 import { LoggingInterceptor } from "./common/interceptors/logging-interceptor";
-import * as dotenv from "dotenv";
 
 async function bootstrap(): Promise<void> {
   dotenv.config();
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
-  app.useGlobalFilters(new ValidationErrorExceptionFilter());
+  // const validationExceptionPipeFilter = new ValidationErrorExceptionFilter();
+  // app.useGlobalPipes(validationExceptionPipeFilter);
+  // app.useGlobalFilters(validationExceptionPipeFilter);
+
   app.useGlobalInterceptors(
     // new HideSensitiveInformationInterceptor(),
     new LoggingInterceptor(),
