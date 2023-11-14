@@ -1,4 +1,5 @@
-import { Expose } from "class-transformer";
+import { Expose, Type } from "class-transformer";
+import { PlayerViewModel } from "./player.viewmodel";
 
 @Expose()
 export class GameViewModel {
@@ -10,6 +11,10 @@ export class GameViewModel {
 
   @Expose()
   finished!: boolean;
+
+  @Expose()
+  @Type(() => PlayerViewModel)
+  players!: PlayerViewModel[];
 }
 
 // const a: Game;
