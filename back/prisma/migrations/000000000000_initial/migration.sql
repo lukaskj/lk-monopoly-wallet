@@ -33,6 +33,3 @@ CREATE TABLE "transaction" (
     CONSTRAINT "transaction_player_id_fkey" FOREIGN KEY ("player_id") REFERENCES "player" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "player_color_game_id_key" ON "player"("color", "game_id");
-

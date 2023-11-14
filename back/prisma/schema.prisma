@@ -36,7 +36,7 @@ model Player {
   updatedAt    DateTime      @updatedAt @map("updated_at")
   transactions Transaction[]
 
-  @@unique([color, gameId])
+//  @@unique([color, gameId])
   @@map("player")
 }
 
