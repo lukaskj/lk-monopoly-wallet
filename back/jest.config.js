@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { pathsToModuleNameMapper } = require("ts-jest");
+const { compilerOptions } = require("./tsconfig");
+
 module.exports = {
   setupFiles: ["../test/jest-setup.ts"],
   clearMocks: true,
@@ -31,4 +35,7 @@ module.exports = {
     "!**/handlers.ts",
     "!**/dotenv.init.ts",
   ],
+  roots: ["<rootDir>"],
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: __dirname }),
+  modulePaths: ["<rootDir>"],
 };

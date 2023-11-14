@@ -20,15 +20,17 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true /* Report errors on unused locals. */,
-    "noUnusedParameters": true /* Report errors on unused parameters. */,
-    "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
     "esModuleInterop": true,
     "strictPropertyInitialization": true,
     "resolveJsonModule": true,
     "paths": {
       "@common/*": ["./src/common/*"],
       "@database/*": ["./src/database/*"],
+      "@test/*": ["./test/*"]
     }
-  }
+  },
+  "exclude": ["node_modules", "dist"]
 }
