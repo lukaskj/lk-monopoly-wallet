@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DB_DATABASE")
+}
+
+model Game {
+  id            Int     @id @default(autoincrement())
+  name          String?
+  finished      Boolean @default(false)
+  password      String?
+  creatorIp     String? @map("creator_ip")
+  initialAmount Decimal @default(0)
+
+  players   Player[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("game")
+}
+
+model Player {
+  id     Int    @id @default(autoincrement())
+  name   String @default("Player")
+  color  String @default("#ffffff")
+  gameId Int    @map("game_id")
+  game   Game   @relation(fields: [gameId], references: [id])
+
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  transactions Transaction[]
+
+  @@unique([color, gameId])
+  @@map("player")
+}
+
+model Transaction {
+  id        Int     @id @default(autoincrement())
+  playerId  Int     @map("player_id")
+  player    Player  @relation(fields: [playerId], references: [id])
+  amount    Decimal
+  operation Int // 1 credit -1 debit
+  ip        String? @map("ip")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("transaction")
+}
