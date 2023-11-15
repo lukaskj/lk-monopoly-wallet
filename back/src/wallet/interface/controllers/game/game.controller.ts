@@ -1,13 +1,15 @@
 import { RealIP } from "@common/decorators/real-ip.decorator";
 import { SerializeTo } from "@common/decorators/serialize-to";
+import { Pagination } from "@common/pagination/pagination";
 import { NotEmptyPipe } from "@common/pipes/not-empty.pipe";
-import { Body, Controller, Delete, Get, Headers, Param, ParseIntPipe, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Headers, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
 import { GameService } from "../../../application/services/game/game.service";
 import { PlayerService } from "../../../application/services/player/player.service";
 import { GameViewModel } from "../../viewmodels/game/game.viewmodel";
+import { PlayerViewModel } from "../../viewmodels/game/player.viewmodel";
 import { CreateGamePlayerViewmodel } from "../../viewmodels/game/request/create-game-player.viewmodel";
 import { CreateGameViewmodel } from "../../viewmodels/game/request/create-game.viewmodel";
-import { PlayerViewModel } from "../../viewmodels/game/player.viewmodel";
+import { FilterGameViewmodel } from "../../viewmodels/game/request/filter-game.viewmodel";
 
 @Controller("/v1/game")
 export class GameController {
@@ -16,6 +18,12 @@ export class GameController {
     private readonly playerService: PlayerService,
   ) {
     this.gameService;
+  }
+
+  @Get("")
+  public async listGames(@Query() params: FilterGameViewmodel) {
+    const [list, total] = await this.gameService.listGames(params);
+    return Pagination.transformAndPaginate(GameViewModel, list, params.page, params.limit, total);
   }
 
   @Get(":id")
@@ -52,7 +60,6 @@ export class GameController {
   }
 
   @Delete(":id")
-  @SerializeTo(GameViewModel)
   public async deleteGame(@Param("id") id: number, @Headers("Authorization") password: string = "") {
     return await this.gameService.deleteGame(id, password);
   }

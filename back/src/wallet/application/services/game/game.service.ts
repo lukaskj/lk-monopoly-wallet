@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { isNullOrEmptyOrUndefined, isNullOrUndefined } from "@common/helpers/is-null-or-undefined";
 import { PrismaService } from "@database/prisma.service";
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Game, Prisma } from "@prisma/client";
 import { CreateGameDto } from "../../dto/create-game.dto";
-import { Game } from "@prisma/client";
+import { FilterGameDto } from "../../dto/filter-game.dto";
 import { PlayerService } from "../player/player.service";
-import { isNullOrUndefined } from "../../../../common/helpers/is-null-or-undefined";
 
 @Injectable()
 export class GameService {
@@ -54,6 +55,44 @@ export class GameService {
     }
 
     return game;
+  }
+
+  public async listGames({ skip, limit: take, name, finished, id }: FilterGameDto): Promise<[Game[], number]> {
+    const where: Prisma.GameWhereInput = {};
+
+    if (!isNullOrUndefined(id)) {
+      where.id = id;
+    }
+
+    if (!isNullOrEmptyOrUndefined(name)) {
+      where.name = {
+        contains: name.toLowerCase(),
+      };
+    }
+
+    if (!isNullOrUndefined(finished)) {
+      where.finished = finished;
+    }
+
+    const games = this.prismaService.game.findMany({
+      where,
+      include: {
+        players: true,
+      },
+      skip,
+      take,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const total = this.prismaService.game.count({
+      where: {
+        ...where,
+      },
+    });
+
+    return await Promise.all([games, total]);
   }
 
   public async finishGame(id: number): Promise<Game> {
