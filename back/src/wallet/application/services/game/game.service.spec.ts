@@ -145,7 +145,7 @@ describe("GameService", () => {
     });
   });
 
-  describe.only("deleteGame", () => {
+  describe("deleteGame", () => {
     it("should successfully delete a game", async () => {
       // given
       const mockGame = _fixtureGame();
