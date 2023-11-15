@@ -76,7 +76,7 @@ export class GameService {
       return;
     }
 
-    if (game.password?.trim() !== password.trim()) {
+    if (game.password !== null && game.password.trim() !== password?.trim()) {
       throw new UnauthorizedException();
     }
 

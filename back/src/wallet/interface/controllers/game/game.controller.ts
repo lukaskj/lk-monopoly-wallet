@@ -53,7 +53,7 @@ export class GameController {
 
   @Delete(":id")
   @SerializeTo(GameViewModel)
-  public async deleteGame(@Param("id") id: number, @Headers("Authorization") password: string) {
+  public async deleteGame(@Param("id") id: number, @Headers("Authorization") password: string = "") {
     return await this.gameService.deleteGame(id, password);
   }
 }
