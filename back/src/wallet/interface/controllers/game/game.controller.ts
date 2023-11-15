@@ -34,6 +34,12 @@ export class GameController {
     return game;
   }
 
+  @Post(":id/finish")
+  @SerializeTo(GameViewModel)
+  public async finishGame(@Param("id") id: number) {
+    return await this.gameService.finishGame(id);
+  }
+
   @Post(":id/player")
   @SerializeTo(PlayerViewModel)
   public async addNewPlayerToGame(@Param("id") id: number, @Body() body: CreateGamePlayerViewmodel) {

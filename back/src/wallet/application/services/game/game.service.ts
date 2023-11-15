@@ -55,4 +55,18 @@ export class GameService {
 
     return game;
   }
+
+  public async finishGame(id: number): Promise<Game> {
+    return await this.prismaService.game.update({
+      data: {
+        finished: true,
+      },
+      where: {
+        id,
+      },
+      include: {
+        players: true,
+      },
+    });
+  }
 }

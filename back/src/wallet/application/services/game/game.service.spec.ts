@@ -106,4 +106,41 @@ describe("GameService", () => {
       expect(playerService.createPlayer).toHaveBeenCalledTimes(mockDto.players.length);
     });
   });
+
+  describe("finishGame", () => {
+    it("should successfully finish a game", async () => {
+      // given
+      const mockGameDto = _fixtureCreateGameDto();
+
+      const mockGame = _fixtureGame({
+        name: mockGameDto.name,
+        password: mockGameDto.password,
+        creatorIp: mockGameDto.creatorIp,
+      });
+
+      const playerService = mock<PlayerService>();
+
+      const prismaService = mockDeep<PrismaService>();
+      prismaService.game.update.mockResolvedValueOnce(mockGame);
+
+      const service = new GameService(prismaService, playerService);
+
+      // when
+      const result = await service.finishGame(mockGame.id);
+
+      // then
+      expect(result.id).toEqual(mockGame.id);
+      expect(prismaService.game.update).toHaveBeenCalledWith({
+        data: {
+          finished: true,
+        },
+        where: {
+          id: mockGame.id,
+        },
+        include: {
+          players: true,
+        },
+      });
+    });
+  });
 });
