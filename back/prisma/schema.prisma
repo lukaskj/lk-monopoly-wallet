@@ -16,7 +16,7 @@ model Game {
   finished      Boolean @default(false)
   password      String?
   creatorIp     String? @map("creator_ip")
-  initialAmount Decimal @default(0)
+  initialAmount Int     @default(0)
 
   players   Player[]
   createdAt DateTime @default(now()) @map("created_at")
@@ -36,7 +36,7 @@ model Player {
   updatedAt    DateTime      @updatedAt @map("updated_at")
   transactions Transaction[]
 
-//  @@unique([color, gameId])
+  //  @@unique([color, gameId])
   @@map("player")
 }
 
@@ -44,7 +44,7 @@ model Transaction {
   id        Int     @id @default(autoincrement())
   playerId  Int     @map("player_id")
   player    Player  @relation(fields: [playerId], references: [id])
-  amount    Decimal
+  amount    Int
   operation Int // 1 credit -1 debit
   ip        String? @map("ip")
 
