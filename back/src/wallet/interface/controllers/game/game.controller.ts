@@ -1,7 +1,7 @@
 import { RealIP } from "@common/decorators/real-ip.decorator";
 import { SerializeTo } from "@common/decorators/serialize-to";
 import { NotEmptyPipe } from "@common/pipes/not-empty.pipe";
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Headers, Param, ParseIntPipe, Post } from "@nestjs/common";
 import { GameService } from "../../../application/services/game/game.service";
 import { PlayerService } from "../../../application/services/player/player.service";
 import { GameViewModel } from "../../viewmodels/game/game.viewmodel";
@@ -49,5 +49,11 @@ export class GameController {
       },
       id,
     );
+  }
+
+  @Delete(":id")
+  @SerializeTo(GameViewModel)
+  public async deleteGame(@Param("id") id: number, @Headers("Authorization") password: string) {
+    return await this.gameService.deleteGame(id, password);
   }
 }

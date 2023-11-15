@@ -6,6 +6,7 @@ import { PrismaService } from "@database/prisma.service";
 @Injectable()
 export class PlayerService {
   constructor(private readonly prismaService: PrismaService) {}
+
   public async createPlayer(playerDto: CreatePlayerDto, gameId: number): Promise<Player> {
     return await this.prismaService.player.create({
       data: {

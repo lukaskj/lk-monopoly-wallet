@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "@database/prisma.service";
 import { CreateGameDto } from "../../dto/create-game.dto";
 import { Game } from "@prisma/client";
@@ -68,5 +68,32 @@ export class GameService {
         players: true,
       },
     });
+  }
+
+  public async deleteGame(id: number, password: string): Promise<void> {
+    const game = await this.prismaService.game.findUnique({ where: { id } });
+    if (isNullOrUndefined(game)) {
+      return;
+    }
+
+    if (game.password?.trim() !== password.trim()) {
+      throw new UnauthorizedException();
+    }
+
+    await this.prismaService.transaction.deleteMany({
+      where: {
+        player: {
+          gameId: id,
+        },
+      },
+    });
+
+    await this.prismaService.player.deleteMany({
+      where: {
+        gameId: id,
+      },
+    });
+
+    await this.prismaService.game.delete({ where: { id } });
   }
 }

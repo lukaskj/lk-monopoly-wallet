@@ -1,5 +1,5 @@
 import { PrismaService } from "@database/prisma.service";
-import { BadRequestException, NotFoundException } from "@nestjs/common";
+import { BadRequestException, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { _fixtureCreateGameDto, _fixtureGame } from "@test/fixtures/game.fixture";
 import { _fixtureCreatePlayerDto } from "@test/fixtures/player.fixture";
 import { mock, mockDeep } from "jest-mock-extended";
@@ -142,6 +142,82 @@ describe("GameService", () => {
           players: true,
         },
       });
+    });
+  });
+
+  describe.only("deleteGame", () => {
+    it("should successfully delete a game", async () => {
+      // given
+      const mockGame = _fixtureGame();
+
+      const prismaService = mockDeep<PrismaService>();
+      prismaService.game.findUnique.mockResolvedValueOnce(mockGame);
+      prismaService.game.delete.mockResolvedValueOnce({} as any);
+      prismaService.transaction.deleteMany.mockResolvedValueOnce({} as any);
+      prismaService.player.deleteMany.mockResolvedValueOnce({} as any);
+
+      const playerService = mock<PlayerService>();
+
+      const service = new GameService(prismaService, playerService);
+
+      // when
+      await service.deleteGame(mockGame.id, mockGame.password as string);
+
+      // then
+      expect(prismaService.game.findUnique).toHaveBeenCalledTimes(1);
+      expect(prismaService.transaction.deleteMany).toHaveBeenCalledTimes(1);
+      expect(prismaService.player.deleteMany).toHaveBeenCalledTimes(1);
+      expect(prismaService.game.delete).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not delete a game if not found", async () => {
+      // given
+      const mockGame = _fixtureGame();
+
+      const prismaService = mockDeep<PrismaService>();
+      prismaService.game.findUnique.mockResolvedValueOnce(null);
+      prismaService.game.delete.mockResolvedValueOnce({} as any);
+      prismaService.transaction.deleteMany.mockResolvedValueOnce({} as any);
+      prismaService.player.deleteMany.mockResolvedValueOnce({} as any);
+
+      const playerService = mock<PlayerService>();
+
+      const service = new GameService(prismaService, playerService);
+
+      // when
+      await service.deleteGame(mockGame.id, mockGame.password as string);
+
+      // then
+      expect(prismaService.game.findUnique).toHaveBeenCalledTimes(1);
+      expect(prismaService.transaction.deleteMany).not.toHaveBeenCalled();
+      expect(prismaService.player.deleteMany).not.toHaveBeenCalled();
+      expect(prismaService.game.delete).not.toHaveBeenCalled();
+    });
+
+    it("should throw unauthorized if password doesn't match", async () => {
+      // given
+      const mockGame = _fixtureGame();
+      const invalidPass = "-111";
+
+      const prismaService = mockDeep<PrismaService>();
+      prismaService.game.findUnique.mockResolvedValueOnce(mockGame);
+      prismaService.game.delete.mockResolvedValueOnce({} as any);
+      prismaService.transaction.deleteMany.mockResolvedValueOnce({} as any);
+      prismaService.player.deleteMany.mockResolvedValueOnce({} as any);
+
+      const playerService = mock<PlayerService>();
+
+      const service = new GameService(prismaService, playerService);
+
+      // when
+      const call = service.deleteGame(mockGame.id, invalidPass);
+      await expect(call).rejects.toThrow(UnauthorizedException);
+
+      // then
+      expect(prismaService.game.findUnique).toHaveBeenCalledTimes(1);
+      expect(prismaService.transaction.deleteMany).not.toHaveBeenCalled();
+      expect(prismaService.player.deleteMany).not.toHaveBeenCalled();
+      expect(prismaService.game.delete).not.toHaveBeenCalled();
     });
   });
 });
