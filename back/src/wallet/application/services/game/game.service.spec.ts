@@ -1,5 +1,5 @@
 import { PrismaService } from "@database/prisma.service";
-import { NotFoundException } from "@nestjs/common";
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { _fixtureCreateGameDto, _fixtureGame } from "@test/fixtures/game.fixture";
 import { _fixtureCreatePlayerDto } from "@test/fixtures/player.fixture";
 import { mock, mockDeep } from "jest-mock-extended";
@@ -47,7 +47,7 @@ describe("GameService", () => {
   });
 
   describe("createGame", () => {
-    it("should successfully create a game without players", async () => {
+    it("should thrown when trying to create a game without players", async () => {
       // given
       const mockDto = _fixtureCreateGameDto();
       const mockGame = _fixtureGame({
@@ -65,13 +65,14 @@ describe("GameService", () => {
       const service = new GameService(prismaService, playerService);
 
       // when
-      const result = await service.createGame(mockDto);
+      const result = service.createGame(mockDto);
+      await expect(result).rejects.toThrow(BadRequestException);
 
       // then
       expect(result).toBeDefined();
-      expect(prismaService.game.create).toHaveBeenCalledTimes(1);
-      expect(prismaService.game.findFirst).toHaveBeenCalledTimes(1);
-      expect(playerService.createPlayer).toHaveBeenCalledTimes(mockDto.players.length);
+      expect(prismaService.game.create).not.toHaveBeenCalled();
+      expect(prismaService.game.findFirst).not.toHaveBeenCalled();
+      expect(playerService.createPlayer).not.toHaveBeenCalled();
     });
 
     it("should successfully create a game with players", async () => {
