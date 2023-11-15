@@ -21,8 +21,15 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["**/*.controller.ts", "**/*.spec.ts", "**/*.fixture.ts"],
+      files: ["**/*.controller.ts"],
       rules: {
+        "@typescript-eslint/explicit-function-return-type": "off",
+      },
+    },
+    {
+      files: ["**/*.spec.ts", "**/*.fixture.ts"],
+      rules: {
+        "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
       },
     },
