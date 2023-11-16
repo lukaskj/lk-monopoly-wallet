@@ -5,6 +5,7 @@ import { _fixtureCreatePlayerDto } from "@test/fixtures/player.fixture";
 import { mock, mockDeep } from "jest-mock-extended";
 import { PlayerService } from "../player/player.service";
 import { GameService } from "./game.service";
+import { FilterGameDto } from "../../dto/filter-game.dto";
 
 describe("GameService", () => {
   describe("getGameById", () => {
@@ -218,6 +219,50 @@ describe("GameService", () => {
       expect(prismaService.transaction.deleteMany).not.toHaveBeenCalled();
       expect(prismaService.player.deleteMany).not.toHaveBeenCalled();
       expect(prismaService.game.delete).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("listGames", () => {
+    it("all parameters", async () => {
+      const mockGame = _fixtureGame();
+
+      const mockFilterDto: FilterGameDto = {
+        finished: true,
+        id: mockGame.id,
+        name: mockGame.name as string,
+        limit: 10,
+        page: 1,
+        skip: 0,
+      };
+
+      const where = {
+        id: mockFilterDto.id,
+        name: {
+          contains: mockFilterDto.name?.toLocaleLowerCase(),
+        },
+        finished: mockFilterDto.finished,
+      };
+
+      const expectedGameList = [mockGame];
+      const expected = [expectedGameList, expectedGameList.length];
+
+      const prismaService = mockDeep<PrismaService>();
+      prismaService.game.findMany.mockResolvedValueOnce(expectedGameList);
+      prismaService.game.count.mockResolvedValueOnce(1);
+
+      const playerService = mock<PlayerService>();
+
+      const service = new GameService(prismaService, playerService);
+
+      // when
+      const result = await service.listGames(mockFilterDto);
+
+      // then
+      expect(result[0]).toEqual(expected[0]);
+      expect(result[1]).toEqual(expected[1]);
+      expect(prismaService.game.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where, skip: mockFilterDto.skip, take: mockFilterDto.limit }),
+      );
     });
   });
 });
