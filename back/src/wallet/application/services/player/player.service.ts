@@ -1,7 +1,8 @@
-import { Injectable } from "@nestjs/common";
-import { CreatePlayerDto } from "../../dto/create-player.dto";
-import { Player } from "@prisma/client";
+import { isNullOrUndefined } from "@common/helpers/is-null-or-undefined";
 import { PrismaService } from "@database/prisma.service";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { Player } from "@prisma/client";
+import { CreatePlayerDto } from "../../dto/create-player.dto";
 
 @Injectable()
 export class PlayerService {
@@ -15,5 +16,17 @@ export class PlayerService {
         gameId,
       },
     });
+  }
+
+  public async getPlayerById(id: number): Promise<Player> {
+    const player = await this.prismaService.player.findUnique({
+      where: { id },
+    });
+
+    if (isNullOrUndefined(player)) {
+      throw new NotFoundException("Player not found.");
+    }
+
+    return player;
   }
 }
