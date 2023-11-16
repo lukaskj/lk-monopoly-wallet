@@ -30,6 +30,8 @@ module.exports = {
     "!database/ormconfig.ts",
     "!**/main.ts",
     "!**/*.fixture.ts",
+    "!**/*.viewmodel.ts",
+    "!**/*.dto.ts",
     "!**/*.module.ts",
     "!**/node_modules/**",
     "!**/vendor/**",
