@@ -1,18 +1,35 @@
-import { Test, TestingModule } from "@nestjs/testing";
+import { PrismaService } from "@database/prisma.service";
+import { mockDeep } from "jest-mock-extended";
+import { _fixtureCreatePlayerDto, _fixturePlayer } from "../../../../../test/fixtures/player.fixture";
 import { PlayerService } from "./player.service";
 
-describe.skip("PlayerService", () => {
-  let service: PlayerService;
+describe("PlayerService", () => {
+  describe("createPlayer", () => {
+    it("should create player", async () => {
+      // given
+      const mockPlayer = _fixturePlayer();
+      const mockDto = _fixtureCreatePlayerDto({
+        name: mockPlayer.name,
+        color: mockPlayer.color,
+      });
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [PlayerService],
-    }).compile();
+      const prismaService = mockDeep<PrismaService>();
+      prismaService.player.create.mockResolvedValueOnce(mockPlayer);
 
-    service = module.get<PlayerService>(PlayerService);
-  });
+      const service = new PlayerService(prismaService);
 
-  it("should be defined", () => {
-    expect(service).toBeDefined();
+      // when
+      const result = await service.createPlayer(mockDto, mockPlayer.gameId);
+
+      // then
+      expect(result).toMatchObject(mockPlayer);
+      expect(prismaService.player.create).toHaveBeenCalledWith({
+        data: {
+          name: mockDto.name,
+          color: mockDto.color,
+          gameId: mockPlayer.gameId,
+        },
+      });
+    });
   });
 });
