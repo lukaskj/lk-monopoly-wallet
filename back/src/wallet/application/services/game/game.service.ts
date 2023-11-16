@@ -51,7 +51,7 @@ export class GameService {
     });
 
     if (isNullOrUndefined(game)) {
-      throw new NotFoundException();
+      throw new NotFoundException("Game not found.");
     }
 
     return game;
