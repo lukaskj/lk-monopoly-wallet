@@ -1,7 +1,7 @@
 import { PrismaService } from "@database/prisma.service";
 import { NotFoundException } from "@nestjs/common";
+import { _fixtureCreatePlayerDto, _fixturePlayer } from "@test/fixtures/player.fixture";
 import { mockDeep } from "jest-mock-extended";
-import { _fixtureCreatePlayerDto, _fixturePlayer } from "../../../../../test/fixtures/player.fixture";
 import { PlayerService } from "./player.service";
 
 describe("PlayerService", () => {
