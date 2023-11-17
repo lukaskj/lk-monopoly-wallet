@@ -22,6 +22,9 @@ export class TransactionService {
         playerId,
         ip,
       },
+      include: {
+        player: true,
+      },
     });
 
     return transaction;

@@ -47,6 +47,9 @@ describe("TransactionService", () => {
           playerId: mockTransaction.playerId,
           ip: mockTransaction.ip,
         },
+        include: {
+          player: true,
+        },
       });
     });
   });
@@ -185,6 +188,7 @@ describe("TransactionService", () => {
 
       // then
       expect(result).toEqual([transactionList, transactionList.length]);
+      expect(transactionRepository.findMany).toHaveBeenCalled();
     });
   });
 });

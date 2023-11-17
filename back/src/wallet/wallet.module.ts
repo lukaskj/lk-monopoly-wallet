@@ -6,10 +6,11 @@ import { TransactionService } from "./application/services/transaction/transacti
 import { GameRepository, PlayerRepository, TransactionRepository } from "./infrastructure/repositories";
 import { GameTransactionsController } from "./interface/controllers/game/game-transactions.controller";
 import { GameController } from "./interface/controllers/game/game.controller";
+import { PlayerController } from "./interface/controllers/player/player.controller";
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [GameController, GameTransactionsController],
+  controllers: [GameController, GameTransactionsController, PlayerController],
   providers: [GameService, PlayerService, TransactionService, PlayerRepository, GameRepository, TransactionRepository],
 })
 export class WalletModule {}
