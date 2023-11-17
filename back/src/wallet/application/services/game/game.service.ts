@@ -1,6 +1,7 @@
 import { isNullOrEmptyOrUndefined, isNullOrUndefined } from "@common/helpers/is-null-or-undefined";
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Game, Prisma } from "@prisma/client";
+import { TransactionOperation } from "../../../domain/enums/transaction-operation.enum";
 import { GameRepository, PlayerRepository, TransactionRepository } from "../../../infrastructure/repositories";
 import { CreateGameDto } from "../../dto/create-game.dto";
 import { FilterGameDto } from "../../dto/filter-game.dto";
@@ -30,7 +31,15 @@ export class GameService {
     });
 
     for (const pl of createGame.players) {
-      await this.playerService.createPlayer(pl, game.id);
+      const player = await this.playerService.createPlayer(pl, game.id);
+      await this.transactionRepository.create({
+        data: {
+          amount: createGame.initialAmount,
+          operation: TransactionOperation.CREDIT,
+          playerId: player.id,
+          ip: createGame.creatorIp,
+        },
+      });
     }
 
     return (await this.gameRepository.findFirst({

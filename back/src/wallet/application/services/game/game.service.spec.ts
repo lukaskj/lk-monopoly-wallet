@@ -105,6 +105,7 @@ describe("GameService", () => {
 
       const playerRepository = mock<PlayerRepository>();
       const transactionRepository = mock<TransactionRepository>();
+      transactionRepository.create.mockResolvedValue({} as any);
 
       const service = new GameService(gameRepository, playerRepository, transactionRepository, playerService);
 
@@ -116,6 +117,7 @@ describe("GameService", () => {
       expect(gameRepository.create).toHaveBeenCalledTimes(1);
       expect(gameRepository.findFirst).toHaveBeenCalledTimes(1);
       expect(playerService.createPlayer).toHaveBeenCalledTimes(mockDto.players.length);
+      expect(transactionRepository.create).toHaveBeenCalledTimes(mockDto.players.length);
     });
   });
 
