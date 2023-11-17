@@ -11,6 +11,7 @@ import { PlayerViewModel } from "../../viewmodels/game/player.viewmodel";
 import { CreateGamePlayerViewmodel } from "../../viewmodels/game/request/create-game-player.viewmodel";
 import { CreateGameViewmodel } from "../../viewmodels/game/request/create-game.viewmodel";
 import { FilterGameViewmodel } from "../../viewmodels/game/request/filter-game.viewmodel";
+import { PlayerBalanceViewModel } from "../../viewmodels/game/player-balance.viewmodel";
 
 @Controller("/v1/game")
 export class GameController {
@@ -64,5 +65,11 @@ export class GameController {
   @Delete(":id")
   public async deleteGame(@Param("id") id: number, @Headers("Authorization") password: string = "") {
     return await this.gameService.deleteGame(id, password);
+  }
+
+  @Get(":id/balance")
+  @SerializeTo(PlayerBalanceViewModel)
+  public async playersBalance(@Param("id") id: number) {
+    return await this.gameService.playersBalance(id);
   }
 }

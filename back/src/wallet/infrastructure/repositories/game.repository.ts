@@ -1,5 +1,6 @@
 import { PrismaService } from "@database/prisma.service";
 import { Injectable } from "@nestjs/common";
+import { PlayerBalance } from "../../domain/entities/player-balance";
 
 @Injectable()
 export class GameRepository {
@@ -45,5 +46,23 @@ export class GameRepository {
     params: Parameters<typeof this.prismaService.game.delete>[0],
   ): ReturnType<typeof this.prismaService.game.delete> {
     return this.prismaService.game.delete(params);
+  }
+
+  public async gamePlayersBalance(gameId: number): Promise<PlayerBalance[]> {
+    const result = await this.prismaService.$queryRaw<PlayerBalance[]>`select p.id
+    , p.name
+    , p.color
+    , coalesce(sum(case t.operation when 1 then t.amount else 0 end), 0) as credit
+    , coalesce(sum(case t.operation when -1 then t.amount else 0 end), 0) as debit
+    , coalesce(sum(t.amount * t.operation) , 0) as balance
+ from player p
+ left join "transaction" t
+   on t.player_id = p.id
+where p.game_id = ${gameId}
+group by p.id
+    , p.name
+    , p.color`;
+
+    return result;
   }
 }

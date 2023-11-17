@@ -6,6 +6,7 @@ import { GameRepository, PlayerRepository, TransactionRepository } from "../../.
 import { CreateGameDto } from "../../dto/create-game.dto";
 import { FilterGameDto } from "../../dto/filter-game.dto";
 import { PlayerService } from "../player/player.service";
+import { PlayerBalance } from "../../../domain/entities/player-balance";
 
 @Injectable()
 export class GameService {
@@ -141,5 +142,9 @@ export class GameService {
     });
 
     await this.gameRepository.delete({ where: { id } });
+  }
+
+  public async playersBalance(gameId: number): Promise<PlayerBalance[]> {
+    return await this.gameRepository.gamePlayersBalance(gameId);
   }
 }
