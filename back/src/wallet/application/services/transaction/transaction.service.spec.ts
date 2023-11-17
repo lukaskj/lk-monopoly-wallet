@@ -1,13 +1,13 @@
-import { PrismaService } from "@database/prisma.service";
+import { faker } from "@faker-js/faker";
+import { UnauthorizedException } from "@nestjs/common";
 import { _fixtureGame } from "@test/fixtures/game.fixture";
 import { _fixturePlayer } from "@test/fixtures/player.fixture";
 import { _fixtureTransaction } from "@test/fixtures/transaction.fixture";
-import { mock, mockDeep } from "jest-mock-extended";
+import { mock } from "jest-mock-extended";
+import { TransactionRepository } from "../../../infrastructure/repositories";
 import { GameService } from "../game/game.service";
 import { PlayerService } from "../player/player.service";
 import { TransactionService } from "./transaction.service";
-import { faker } from "@faker-js/faker";
-import { UnauthorizedException } from "@nestjs/common";
 
 describe("TransactionService", () => {
   describe("addPlayerTransaction", () => {
@@ -24,10 +24,11 @@ describe("TransactionService", () => {
 
       const playerService = mock<PlayerService>();
       const gameService = mock<GameService>();
-      const prismaService = mockDeep<PrismaService>();
-      prismaService.transaction.create.mockResolvedValueOnce(mockTransaction);
 
-      const service = new TransactionService(prismaService, playerService, gameService);
+      const transactionRepository = mock<TransactionRepository>();
+      transactionRepository.create.mockResolvedValueOnce(mockTransaction);
+
+      const service = new TransactionService(playerService, gameService, transactionRepository);
 
       // when
       const result = await service.addPlayerTransaction(
@@ -38,7 +39,7 @@ describe("TransactionService", () => {
 
       // then
       expect(result).toMatchObject(mockTransaction);
-      expect(prismaService.transaction.create).toHaveBeenCalledWith({
+      expect(transactionRepository.create).toHaveBeenCalledWith({
         data: {
           amount: mockTransaction.amount,
           operation: mockTransaction.operation,
@@ -76,9 +77,10 @@ describe("TransactionService", () => {
       const gameService = mock<GameService>();
       gameService.getGameById.mockResolvedValueOnce(mockGame);
 
-      const prismaService = mockDeep<PrismaService>();
+      const transactionRepository = mock<TransactionRepository>();
 
-      const service = new TransactionService(prismaService, playerService, gameService);
+      const service = new TransactionService(playerService, gameService, transactionRepository);
+
       const $addPlayerTransaction = jest.spyOn(service, "addPlayerTransaction").mockResolvedValueOnce(mockTransaction);
 
       // when
@@ -122,9 +124,9 @@ describe("TransactionService", () => {
       const gameService = mock<GameService>();
       gameService.getGameById.mockResolvedValueOnce(mockGame);
 
-      const prismaService = mockDeep<PrismaService>();
+      const transactionRepository = mock<TransactionRepository>();
 
-      const service = new TransactionService(prismaService, playerService, gameService);
+      const service = new TransactionService(playerService, gameService, transactionRepository);
       const $addPlayerTransaction = jest.spyOn(service, "addPlayerTransaction").mockResolvedValueOnce(mockTransaction);
 
       // when

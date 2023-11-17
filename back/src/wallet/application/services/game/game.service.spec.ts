@@ -1,11 +1,11 @@
-import { PrismaService } from "@database/prisma.service";
 import { BadRequestException, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { _fixtureCreateGameDto, _fixtureGame } from "@test/fixtures/game.fixture";
 import { _fixtureCreatePlayerDto } from "@test/fixtures/player.fixture";
-import { mock, mockDeep } from "jest-mock-extended";
+import { mock } from "jest-mock-extended";
+import { GameRepository, PlayerRepository, TransactionRepository } from "../../../infrastructure/repositories";
+import { FilterGameDto } from "../../dto/filter-game.dto";
 import { PlayerService } from "../player/player.service";
 import { GameService } from "./game.service";
-import { FilterGameDto } from "../../dto/filter-game.dto";
 
 describe("GameService", () => {
   describe("getGameById", () => {
@@ -14,10 +14,12 @@ describe("GameService", () => {
       const mockGame = _fixtureGame();
 
       const playerService = mock<PlayerService>();
-      const prismaService = mockDeep<PrismaService>();
+      const playerRepository = mock<PlayerRepository>();
+      const gameRepository = mock<GameRepository>();
+      const transactionRepository = mock<TransactionRepository>();
 
-      prismaService.game.findUnique.mockResolvedValueOnce(mockGame);
-      const service = new GameService(prismaService, playerService);
+      gameRepository.findUnique.mockResolvedValueOnce(mockGame);
+      const service = new GameService(gameRepository, playerRepository, transactionRepository, playerService);
 
       // when
       const result = await service.getGameById(mockGame.id);
@@ -25,7 +27,7 @@ describe("GameService", () => {
       // then
       expect(result).toBeDefined();
       expect(result.id).toEqual(mockGame.id);
-      expect(prismaService.game.findUnique).toHaveBeenCalledTimes(1);
+      expect(gameRepository.findUnique).toHaveBeenCalledTimes(1);
     });
 
     it("should throw exception if not found", async () => {
@@ -33,17 +35,19 @@ describe("GameService", () => {
       const mockGame = _fixtureGame();
 
       const playerService = mock<PlayerService>();
-      const prismaService = mockDeep<PrismaService>();
+      const playerRepository = mock<PlayerRepository>();
+      const gameRepository = mock<GameRepository>();
+      const transactionRepository = mock<TransactionRepository>();
 
-      prismaService.game.findUnique.mockResolvedValueOnce(null);
-      const service = new GameService(prismaService, playerService);
+      gameRepository.findUnique.mockResolvedValueOnce(null);
+      const service = new GameService(gameRepository, playerRepository, transactionRepository, playerService);
 
       // when
       const result = service.getGameById(mockGame.id);
 
       // then
       await expect(result).rejects.toThrow(NotFoundException);
-      expect(prismaService.game.findUnique).toHaveBeenCalledTimes(1);
+      expect(gameRepository.findUnique).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -58,12 +62,15 @@ describe("GameService", () => {
       });
 
       const playerService = mock<PlayerService>();
-      const prismaService = mockDeep<PrismaService>();
 
-      prismaService.game.create.mockResolvedValueOnce(mockGame);
-      prismaService.game.findFirst.mockResolvedValueOnce(mockGame);
+      const gameRepository = mock<GameRepository>();
+      gameRepository.create.mockResolvedValueOnce(mockGame);
+      gameRepository.findFirst.mockResolvedValueOnce(mockGame);
 
-      const service = new GameService(prismaService, playerService);
+      const playerRepository = mock<PlayerRepository>();
+      const transactionRepository = mock<TransactionRepository>();
+
+      const service = new GameService(gameRepository, playerRepository, transactionRepository, playerService);
 
       // when
       const result = service.createGame(mockDto);
@@ -71,8 +78,8 @@ describe("GameService", () => {
 
       // then
       expect(result).toBeDefined();
-      expect(prismaService.game.create).not.toHaveBeenCalled();
-      expect(prismaService.game.findFirst).not.toHaveBeenCalled();
+      expect(gameRepository.create).not.toHaveBeenCalled();
+      expect(gameRepository.findFirst).not.toHaveBeenCalled();
       expect(playerService.createPlayer).not.toHaveBeenCalled();
     });
 
@@ -92,19 +99,22 @@ describe("GameService", () => {
       const playerService = mock<PlayerService>();
       playerService.createPlayer.mockReturnThis();
 
-      const prismaService = mockDeep<PrismaService>();
-      prismaService.game.create.mockResolvedValueOnce(mockGame);
-      prismaService.game.findFirst.mockResolvedValueOnce(mockGame);
+      const gameRepository = mock<GameRepository>();
+      gameRepository.create.mockResolvedValueOnce(mockGame);
+      gameRepository.findFirst.mockResolvedValueOnce(mockGame);
 
-      const service = new GameService(prismaService, playerService);
+      const playerRepository = mock<PlayerRepository>();
+      const transactionRepository = mock<TransactionRepository>();
+
+      const service = new GameService(gameRepository, playerRepository, transactionRepository, playerService);
 
       // when
       const result = await service.createGame(mockDto);
 
       // then
       expect(result).toBeDefined();
-      expect(prismaService.game.create).toHaveBeenCalledTimes(1);
-      expect(prismaService.game.findFirst).toHaveBeenCalledTimes(1);
+      expect(gameRepository.create).toHaveBeenCalledTimes(1);
+      expect(gameRepository.findFirst).toHaveBeenCalledTimes(1);
       expect(playerService.createPlayer).toHaveBeenCalledTimes(mockDto.players.length);
     });
   });
@@ -122,17 +132,20 @@ describe("GameService", () => {
 
       const playerService = mock<PlayerService>();
 
-      const prismaService = mockDeep<PrismaService>();
-      prismaService.game.update.mockResolvedValueOnce(mockGame);
+      const gameRepository = mock<GameRepository>();
+      gameRepository.update.mockResolvedValueOnce(mockGame);
 
-      const service = new GameService(prismaService, playerService);
+      const playerRepository = mock<PlayerRepository>();
+      const transactionRepository = mock<TransactionRepository>();
+
+      const service = new GameService(gameRepository, playerRepository, transactionRepository, playerService);
 
       // when
       const result = await service.finishGame(mockGame.id);
 
       // then
       expect(result.id).toEqual(mockGame.id);
-      expect(prismaService.game.update).toHaveBeenCalledWith({
+      expect(gameRepository.update).toHaveBeenCalledWith({
         data: {
           finished: true,
         },
@@ -151,48 +164,56 @@ describe("GameService", () => {
       // given
       const mockGame = _fixtureGame();
 
-      const prismaService = mockDeep<PrismaService>();
-      prismaService.game.findUnique.mockResolvedValueOnce(mockGame);
-      prismaService.game.delete.mockResolvedValueOnce({} as any);
-      prismaService.transaction.deleteMany.mockResolvedValueOnce({} as any);
-      prismaService.player.deleteMany.mockResolvedValueOnce({} as any);
+      const gameRepository = mock<GameRepository>();
+      gameRepository.findUnique.mockResolvedValueOnce(mockGame);
+      gameRepository.delete.mockResolvedValueOnce({} as any);
+
+      const transactionRepository = mock<TransactionRepository>();
+      transactionRepository.deleteMany.mockResolvedValueOnce({} as any);
+
+      const playerRepository = mock<PlayerRepository>();
+      playerRepository.deleteMany.mockResolvedValueOnce({} as any);
 
       const playerService = mock<PlayerService>();
 
-      const service = new GameService(prismaService, playerService);
+      const service = new GameService(gameRepository, playerRepository, transactionRepository, playerService);
 
       // when
       await service.deleteGame(mockGame.id, mockGame.password as string);
 
       // then
-      expect(prismaService.game.findUnique).toHaveBeenCalledTimes(1);
-      expect(prismaService.transaction.deleteMany).toHaveBeenCalledTimes(1);
-      expect(prismaService.player.deleteMany).toHaveBeenCalledTimes(1);
-      expect(prismaService.game.delete).toHaveBeenCalledTimes(1);
+      expect(gameRepository.findUnique).toHaveBeenCalledTimes(1);
+      expect(transactionRepository.deleteMany).toHaveBeenCalledTimes(1);
+      expect(playerRepository.deleteMany).toHaveBeenCalledTimes(1);
+      expect(gameRepository.delete).toHaveBeenCalledTimes(1);
     });
 
     it("should not delete a game if not found", async () => {
       // given
       const mockGame = _fixtureGame();
 
-      const prismaService = mockDeep<PrismaService>();
-      prismaService.game.findUnique.mockResolvedValueOnce(null);
-      prismaService.game.delete.mockResolvedValueOnce({} as any);
-      prismaService.transaction.deleteMany.mockResolvedValueOnce({} as any);
-      prismaService.player.deleteMany.mockResolvedValueOnce({} as any);
+      const gameRepository = mock<GameRepository>();
+      gameRepository.findUnique.mockResolvedValueOnce(null);
+      gameRepository.delete.mockResolvedValueOnce({} as any);
+
+      const transactionRepository = mock<TransactionRepository>();
+      transactionRepository.deleteMany.mockResolvedValueOnce({} as any);
+
+      const playerRepository = mock<PlayerRepository>();
+      playerRepository.deleteMany.mockResolvedValueOnce({} as any);
 
       const playerService = mock<PlayerService>();
 
-      const service = new GameService(prismaService, playerService);
+      const service = new GameService(gameRepository, playerRepository, transactionRepository, playerService);
 
       // when
       await service.deleteGame(mockGame.id, mockGame.password as string);
 
       // then
-      expect(prismaService.game.findUnique).toHaveBeenCalledTimes(1);
-      expect(prismaService.transaction.deleteMany).not.toHaveBeenCalled();
-      expect(prismaService.player.deleteMany).not.toHaveBeenCalled();
-      expect(prismaService.game.delete).not.toHaveBeenCalled();
+      expect(gameRepository.findUnique).toHaveBeenCalledTimes(1);
+      expect(transactionRepository.deleteMany).not.toHaveBeenCalled();
+      expect(playerRepository.deleteMany).not.toHaveBeenCalled();
+      expect(gameRepository.delete).not.toHaveBeenCalled();
     });
 
     it("should throw unauthorized if password doesn't match", async () => {
@@ -200,25 +221,29 @@ describe("GameService", () => {
       const mockGame = _fixtureGame();
       const invalidPass = "-111";
 
-      const prismaService = mockDeep<PrismaService>();
-      prismaService.game.findUnique.mockResolvedValueOnce(mockGame);
-      prismaService.game.delete.mockResolvedValueOnce({} as any);
-      prismaService.transaction.deleteMany.mockResolvedValueOnce({} as any);
-      prismaService.player.deleteMany.mockResolvedValueOnce({} as any);
+      const gameRepository = mock<GameRepository>();
+      gameRepository.findUnique.mockResolvedValueOnce(mockGame);
+      gameRepository.delete.mockResolvedValueOnce({} as any);
+
+      const transactionRepository = mock<TransactionRepository>();
+      transactionRepository.deleteMany.mockResolvedValueOnce({} as any);
+
+      const playerRepository = mock<PlayerRepository>();
+      playerRepository.deleteMany.mockResolvedValueOnce({} as any);
 
       const playerService = mock<PlayerService>();
 
-      const service = new GameService(prismaService, playerService);
+      const service = new GameService(gameRepository, playerRepository, transactionRepository, playerService);
 
       // when
       const call = service.deleteGame(mockGame.id, invalidPass);
       await expect(call).rejects.toThrow(UnauthorizedException);
 
       // then
-      expect(prismaService.game.findUnique).toHaveBeenCalledTimes(1);
-      expect(prismaService.transaction.deleteMany).not.toHaveBeenCalled();
-      expect(prismaService.player.deleteMany).not.toHaveBeenCalled();
-      expect(prismaService.game.delete).not.toHaveBeenCalled();
+      expect(gameRepository.findUnique).toHaveBeenCalledTimes(1);
+      expect(transactionRepository.deleteMany).not.toHaveBeenCalled();
+      expect(playerRepository.deleteMany).not.toHaveBeenCalled();
+      expect(gameRepository.delete).not.toHaveBeenCalled();
     });
   });
 
@@ -246,13 +271,16 @@ describe("GameService", () => {
       const expectedGameList = [mockGame];
       const expected = [expectedGameList, expectedGameList.length];
 
-      const prismaService = mockDeep<PrismaService>();
-      prismaService.game.findMany.mockResolvedValueOnce(expectedGameList);
-      prismaService.game.count.mockResolvedValueOnce(1);
+      const gameRepository = mock<GameRepository>();
+      gameRepository.findMany.mockResolvedValueOnce(expectedGameList);
+      gameRepository.count.mockResolvedValueOnce(1);
+
+      const playerRepository = mock<PlayerRepository>();
+      const transactionRepository = mock<TransactionRepository>();
 
       const playerService = mock<PlayerService>();
 
-      const service = new GameService(prismaService, playerService);
+      const service = new GameService(gameRepository, playerRepository, transactionRepository, playerService);
 
       // when
       const result = await service.listGames(mockFilterDto);
@@ -260,7 +288,7 @@ describe("GameService", () => {
       // then
       expect(result[0]).toEqual(expected[0]);
       expect(result[1]).toEqual(expected[1]);
-      expect(prismaService.game.findMany).toHaveBeenCalledWith(
+      expect(gameRepository.findMany).toHaveBeenCalledWith(
         expect.objectContaining({ where, skip: mockFilterDto.skip, take: mockFilterDto.limit }),
       );
     });

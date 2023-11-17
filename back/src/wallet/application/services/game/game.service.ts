@@ -1,7 +1,7 @@
 import { isNullOrEmptyOrUndefined, isNullOrUndefined } from "@common/helpers/is-null-or-undefined";
-import { PrismaService } from "@database/prisma.service";
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Game, Prisma } from "@prisma/client";
+import { GameRepository, PlayerRepository, TransactionRepository } from "../../../infrastructure/repositories";
 import { CreateGameDto } from "../../dto/create-game.dto";
 import { FilterGameDto } from "../../dto/filter-game.dto";
 import { PlayerService } from "../player/player.service";
@@ -9,7 +9,9 @@ import { PlayerService } from "../player/player.service";
 @Injectable()
 export class GameService {
   constructor(
-    private readonly prismaService: PrismaService,
+    private readonly gameRepository: GameRepository,
+    private readonly playerRepository: PlayerRepository,
+    private readonly transactionRepository: TransactionRepository,
     private readonly playerService: PlayerService,
   ) {}
 
@@ -18,7 +20,7 @@ export class GameService {
       throw new BadRequestException("Minimum players: 2");
     }
 
-    const game = await this.prismaService.game.create({
+    const game = await this.gameRepository.create({
       data: {
         name: createGame.name,
         password: createGame.password,
@@ -27,13 +29,11 @@ export class GameService {
       },
     });
 
-    // const promises = [];
     for (const pl of createGame.players) {
       await this.playerService.createPlayer(pl, game.id);
     }
-    // await Promise.allSettled(promises);
 
-    return (await this.prismaService.game.findFirst({
+    return (await this.gameRepository.findFirst({
       where: {
         id: game.id,
       },
@@ -44,7 +44,7 @@ export class GameService {
   }
 
   public async getGameById(id: number): Promise<Game> {
-    const game = await this.prismaService.game.findUnique({
+    const game = await this.gameRepository.findUnique({
       where: {
         id,
       },
@@ -74,7 +74,7 @@ export class GameService {
       where.finished = finished;
     }
 
-    const games = this.prismaService.game.findMany({
+    const games = this.gameRepository.findMany({
       where,
       include: {
         players: true,
@@ -86,17 +86,15 @@ export class GameService {
       },
     });
 
-    const total = this.prismaService.game.count({
-      where: {
-        ...where,
-      },
+    const total = this.gameRepository.count({
+      where,
     });
 
     return await Promise.all([games, total]);
   }
 
   public async finishGame(id: number): Promise<Game> {
-    return await this.prismaService.game.update({
+    return await this.gameRepository.update({
       data: {
         finished: true,
       },
@@ -110,7 +108,7 @@ export class GameService {
   }
 
   public async deleteGame(id: number, password: string): Promise<void> {
-    const game = await this.prismaService.game.findUnique({ where: { id } });
+    const game = await this.gameRepository.findUnique({ where: { id } });
     if (isNullOrUndefined(game)) {
       return;
     }
@@ -119,7 +117,7 @@ export class GameService {
       throw new UnauthorizedException();
     }
 
-    await this.prismaService.transaction.deleteMany({
+    await this.transactionRepository.deleteMany({
       where: {
         player: {
           gameId: id,
@@ -127,12 +125,12 @@ export class GameService {
       },
     });
 
-    await this.prismaService.player.deleteMany({
+    await this.playerRepository.deleteMany({
       where: {
         gameId: id,
       },
     });
 
-    await this.prismaService.game.delete({ where: { id } });
+    await this.gameRepository.delete({ where: { id } });
   }
 }
