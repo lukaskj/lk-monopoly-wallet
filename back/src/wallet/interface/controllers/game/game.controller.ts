@@ -5,14 +5,12 @@ import { NotEmptyPipe } from "@common/pipes/not-empty.pipe";
 import { Body, Controller, Delete, Get, Headers, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
 import { GameService } from "../../../application/services/game/game.service";
 import { PlayerService } from "../../../application/services/player/player.service";
+import { TransactionService } from "../../../application/services/transaction/transaction.service";
 import { GameViewModel } from "../../viewmodels/game/game.viewmodel";
 import { PlayerViewModel } from "../../viewmodels/game/player.viewmodel";
 import { CreateGamePlayerViewmodel } from "../../viewmodels/game/request/create-game-player.viewmodel";
 import { CreateGameViewmodel } from "../../viewmodels/game/request/create-game.viewmodel";
 import { FilterGameViewmodel } from "../../viewmodels/game/request/filter-game.viewmodel";
-import { FilterTransactionsViewmodel } from "../../viewmodels/game/request/filter-transactions.viewmodel";
-import { TransactionService } from "../../../application/services/transaction/transaction.service";
-import { TransactionViewModel } from "../../viewmodels/game/transaction.viewmodel";
 
 @Controller("/v1/game")
 export class GameController {
@@ -66,17 +64,5 @@ export class GameController {
   @Delete(":id")
   public async deleteGame(@Param("id") id: number, @Headers("Authorization") password: string = "") {
     return await this.gameService.deleteGame(id, password);
-  }
-
-  @Get(":id/transactions")
-  public async listTransactions(@Param("id") id: number, @Query() params: FilterTransactionsViewmodel) {
-    const [list, total] = await this.transactionService.listTransactions({
-      limit: params.limit,
-      page: params.page,
-      skip: params.skip,
-      gameId: id,
-    });
-
-    return Pagination.transformAndPaginate(TransactionViewModel, list, params.page, params.limit, total);
   }
 }
