@@ -65,6 +65,9 @@ export class TransactionService {
       include: {
         player: true,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     const count = this.transactionRepository.count({
