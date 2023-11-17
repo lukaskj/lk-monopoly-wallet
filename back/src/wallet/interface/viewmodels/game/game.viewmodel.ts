@@ -15,6 +15,9 @@ export class GameViewModel {
   @Expose()
   @Type(() => PlayerViewModel)
   players!: PlayerViewModel[];
+
+  @Expose()
+  createdAt!: Date;
 }
 
 // const a: Game;
