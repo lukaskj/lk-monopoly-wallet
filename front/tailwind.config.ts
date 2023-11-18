@@ -4,6 +4,7 @@ import tailwindcss_forms from "@tailwindcss/forms";
 
 // 1. Import the Skeleton plugin
 import { skeleton } from "@skeletonlabs/tw-plugin";
+import { MainTheme } from "./themes/main-theme";
 
 /** @type {import('tailwindcss').Config}*/
 const config = {
@@ -21,7 +22,10 @@ const config = {
   plugins: [
     tailwindcss_forms,
     skeleton({
-      themes: { preset: ["skeleton", "hamlindigo", "modern"] },
+      themes: {
+        preset: ["skeleton", "hamlindigo", "modern"],
+        custom: [MainTheme],
+      },
     }),
   ],
 } satisfies Config;
