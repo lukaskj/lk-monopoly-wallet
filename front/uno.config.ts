@@ -6,8 +6,9 @@ export default defineConfig({
   presets: [
     presetIcons({
       prefix: "",
+      scale: 1.4,
       collections: {
-        "icon": () => import("@iconify-json/game-icons/icons.json").then((i) => i.default as any),
+        icon: () => import("@iconify-json/game-icons/icons.json").then((i) => i.default as any),
       },
     }),
   ],
