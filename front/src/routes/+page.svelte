@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { InputChip } from "@skeletonlabs/skeleton";
   import { ApiRequest } from "../lib/request/api-request";
   let list: string[] = ["foo", "bar", "fizz", "buzz"];
 
@@ -13,17 +12,11 @@
   }
 </script>
 
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-<InputChip bind:value={list} name="chips" placeholder="Enter any value..." />
-<button class="btn variant-filled" on:click={getGames}>Get games</button>
-
-{#each games as game}
-  <div>{game.name}</div>
-{/each}
-
-<div class="btn-group-vertical variant-filled">
-  <button>Months</button>
-  <button>Days</button>
-  <button>Years</button>
+<div class="container p-10 space-y-4">
+  <h1>Homepage</h1>
+  <hr />
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate nostrum, vero explicabo sunt ipsum asperiores.
+    Molestias nostrum mollitia cumque veniam eum error atque, dolores nesciunt voluptas ea consectetur sed delectus.
+  </p>
 </div>
