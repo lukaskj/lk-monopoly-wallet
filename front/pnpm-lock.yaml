@@ -44,6 +44,9 @@ devDependencies:
   autoprefixer:
     specifier: ^10.4.14
     version: 10.4.16(postcss@8.4.31)
+  class-transformer:
+    specifier: ^0.5.1
+    version: 0.5.1
   eslint:
     specifier: ^8.45.0
     version: 8.53.0
@@ -1190,6 +1193,10 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.3
+    dev: true
+
+  /class-transformer@0.5.1:
+    resolution: {integrity: sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw==}
     dev: true
 
   /code-red@1.0.4:

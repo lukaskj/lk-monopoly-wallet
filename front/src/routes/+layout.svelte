@@ -5,8 +5,13 @@
   import "../app.postcss";
   import "virtual:uno.css";
 
-  import { AppShell } from "@skeletonlabs/skeleton";
+  import { AppShell, Toast } from "@skeletonlabs/skeleton";
+
+  import { initializeStores } from "@skeletonlabs/skeleton";
+  initializeStores();
 </script>
+
+<Toast />
 
 <AppShell>
   <svelte:fragment slot="header">

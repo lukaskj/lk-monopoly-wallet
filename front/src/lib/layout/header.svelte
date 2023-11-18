@@ -1,4 +1,5 @@
 <script>
+  import { Notification } from "$lib/notification";
   import { AppBar } from "@skeletonlabs/skeleton";
   // import IconWallet from "~icons/game-icons/wallet";
 </script>
@@ -8,5 +9,7 @@
     <i class="icon:wallet" />
   </svelte:fragment>
   LK Monopoly Wallet
-  <svelte:fragment slot="trail">asda</svelte:fragment>
+  <svelte:fragment slot="trail">
+    <button on:click={() => Notification.success("Test")}>Notification</button>
+  </svelte:fragment>
 </AppBar>
