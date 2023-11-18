@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Notification } from "$lib/notification";
   import { AppBar, getDrawerStore } from "@skeletonlabs/skeleton";
+  import { layoutTitle } from "../../stores/layout-title.store";
   // import IconWallet from "~icons/game-icons/wallet";
 
   const drawerStore = getDrawerStore();
@@ -25,7 +26,7 @@
       </button>
     </div>
   </svelte:fragment>
-  <strong class="text-xl uppercase">LK Monopoly Wallet</strong>
+  <strong class="text-xl uppercase">{$layoutTitle}</strong>
 
   <svelte:fragment slot="trail">
     <i class="icon:settings-knobs"></i>
