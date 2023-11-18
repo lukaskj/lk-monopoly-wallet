@@ -1,4 +1,5 @@
 <script>
+  import "reflect-metadata";
   // import "../theme.postcss";
   // This contains the bulk of Skeletons required styles:
   import Header from "$lib/layout/header.svelte";

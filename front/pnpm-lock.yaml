@@ -68,6 +68,9 @@ devDependencies:
   prettier-plugin-svelte:
     specifier: ^3.0.0
     version: 3.1.0(prettier@3.1.0)(svelte@4.2.5)
+  reflect-metadata:
+    specifier: ^0.1.13
+    version: 0.1.13
   svelte:
     specifier: ^4.1.1
     version: 4.2.5
@@ -2359,6 +2362,10 @@ packages:
     engines: {node: '>=8.10.0'}
     dependencies:
       picomatch: 2.3.1
+    dev: true
+
+  /reflect-metadata@0.1.13:
+    resolution: {integrity: sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg==}
     dev: true
 
   /resolve-from@4.0.0:

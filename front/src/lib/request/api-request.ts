@@ -5,6 +5,7 @@ import { Notification } from "../notification";
 import { StatusCodes } from "../status-codes";
 import type { AnyType, ClassConstructor } from "../types";
 import { backendApiEndpoint } from "./backend-api-endpoint";
+import { PaginatedData } from "../dto";
 
 type TRequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -100,6 +101,15 @@ export class ApiRequest {
     }
 
     return json;
+  }
+
+  public async getPaginated<T>(
+    page: number = 1,
+    limit: number = 20,
+    params?: Record<string, AnyType>,
+  ): Promise<PaginatedData<T>> {
+    this.queryParams = { ...this.queryParams, page, limit, ...params };
+    return this.execute(PaginatedData<T>);
   }
 
   public async get<T>(transformTo?: ClassConstructor<T>): Promise<T> {
