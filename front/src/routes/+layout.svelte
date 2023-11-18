@@ -2,13 +2,15 @@
   // import "../theme.postcss";
   // This contains the bulk of Skeletons required styles:
   import Header from "$lib/layout/header.svelte";
-  import "../app.postcss";
+  import { AppShell, Toast, getToastStore, initializeStores } from "@skeletonlabs/skeleton";
   import "virtual:uno.css";
+  import "../app.postcss";
+  import { Notification } from "$lib/notification";
 
-  import { AppShell, Toast } from "@skeletonlabs/skeleton";
-
-  import { initializeStores } from "@skeletonlabs/skeleton";
   initializeStores();
+
+  const toastStore = getToastStore();
+  Notification.setToastStore(toastStore);
 </script>
 
 <Toast />

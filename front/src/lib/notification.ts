@@ -1,11 +1,17 @@
-import type { ToastSettings } from "@skeletonlabs/skeleton";
-import { getToastStore } from "@skeletonlabs/skeleton";
+import type { ToastSettings, ToastStore } from "@skeletonlabs/skeleton";
 
 type NotificationOptions = Omit<ToastSettings, "message">;
 type NotificationOptionsNoBg = Omit<NotificationOptions, "background">;
-
-const toastStore = getToastStore();
 export class Notification {
+  private static _toastStore: ToastStore | null;
+
+  public static setToastStore(store: ToastStore): void {
+    this._toastStore = store;
+  }
+
+  private static toastStore(): ToastStore {
+    return this._toastStore as ToastStore;
+  }
   public static success(message: string | string[], options: NotificationOptionsNoBg = {}): string {
     return this.show(message, { background: "variant-filled-success", ...options });
   }
@@ -21,7 +27,7 @@ export class Notification {
   public static show(message: string | string[], options: NotificationOptions = {}): string {
     const _message = Array.isArray(message) ? message.join("\n") : message;
 
-    return toastStore.trigger({
+    return this.toastStore().trigger({
       message: _message,
       hoverable: true,
       timeout: 5000,
@@ -30,6 +36,6 @@ export class Notification {
   }
 
   public static clear() {
-    toastStore.clear();
+    this.toastStore().clear();
   }
 }
