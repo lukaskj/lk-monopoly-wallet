@@ -20,7 +20,7 @@
       <i class="icon:menu"></i>
     </button>
   </svelte:fragment>
-  <strong class="text-xl">{$layoutTitleStore}</strong>
+  {$layoutTitleStore}
   <svelte:fragment slot="trail">
     <svelte:component this={$appbarTrailStore} param={$appbarTrailParamsStore} />
   </svelte:fragment>
