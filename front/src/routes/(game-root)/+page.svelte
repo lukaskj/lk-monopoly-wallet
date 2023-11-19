@@ -1,9 +1,10 @@
 <script lang="ts">
   import GameCard from "$lib/components/game/game-card.svelte";
   import { Game, type PaginatedData } from "$lib/dto";
+  import { ApiRequest } from "$lib/request/api-request";
   import { layoutTitleStore } from "$lib/stores/layout-title.store";
   import { Paginator, type PaginationSettings } from "@skeletonlabs/skeleton";
-  import { ApiRequest } from "../lib/request/api-request";
+  import type { PageData } from "./$types";
   $layoutTitleStore = "Partidas";
 
   let pageData: PaginatedData<Game> = {
@@ -20,14 +21,12 @@
     amounts: [],
   } satisfies PaginationSettings;
 
-  async function getGames() {
+  async function getGames(page: number) {
     try {
       loading = true;
-      const page = paginationSettings.page + 1;
-      const limit = paginationSettings.limit;
       const response = await new ApiRequest(fetch)
         .endpoint("/game", { finished: false })
-        .getPaginated(page, limit, Game);
+        .getPaginated(page, paginationSettings.limit, Game);
       pageData = response;
 
       paginationSettings.page = pageData.meta.page - 1;
@@ -35,11 +34,15 @@
     } catch (error) {
       console.error(error);
     } finally {
-      loading = false;
+      // loading = false;
     }
   }
 
-  getGames();
+  function onPageChange(e: CustomEvent): void {
+    getGames(paginationSettings.page + 1);
+  }
+
+  getGames(1);
 </script>
 
 <div class="container p-4 space-y-4">
@@ -53,5 +56,6 @@
     showFirstLastButtons={false}
     showPreviousNextButtons={true}
     separatorText="de"
+    on:page={onPageChange}
   />
 </div>
