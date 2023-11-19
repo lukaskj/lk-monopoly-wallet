@@ -5,7 +5,7 @@
   export let transactions: Transaction[];
 </script>
 
-<ul class="list p-4">
+<ul class="list pt-5">
   {#each transactions as tr}
     <li>
       <span class={`badge  ${tr.operation === 1 ? "bg-success-300" : "bg-error-300"}`}>

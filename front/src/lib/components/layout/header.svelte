@@ -2,7 +2,6 @@
   import { appbarTrailParamsStore, appbarTrailStore } from "$lib/stores/appbar-trail.store";
   import { AppBar, getDrawerStore } from "@skeletonlabs/skeleton";
   import { layoutTitleStore } from "../../stores/layout-title.store";
-  // import IconWallet from "~icons/game-icons/wallet";
 
   const drawerStore = getDrawerStore();
 

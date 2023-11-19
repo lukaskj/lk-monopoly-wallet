@@ -14,7 +14,7 @@
 </script>
 
 <div
-  class="player-card card relative max-w-xs border-2 rounded flex flex-col justify-between {selected
+  class="player-card card relative max-w-xs border-2 rounded-lg flex flex-col justify-between {selected
     ? 'border-primary-500'
     : ''}"
   on:click={toggleSelected}
@@ -28,7 +28,7 @@
   <header class="card-header font-bold">{player.name}</header>
   <section class="pl-4 pr-4 pt-1 pb-1"></section>
   <footer class="card-footer flex justify-end items-center p-0">
-    <button class="btn btn-sm variant-filled-tertiary w-full font-bold">
+    <button class="btn btn-sm variant-filled-tertiary w-full font-bold rounded-b-md text-lg">
       {CurrencyFormatter.format(player.balance)}
     </button>
   </footer>

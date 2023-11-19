@@ -23,7 +23,7 @@
   }
 </script>
 
-<div class="flex flex-row p-4 space-x-2 justify-between flex-wrap">
+<div class="flex flex-row space-x-2 justify-between flex-wrap">
   {#each players as player}
     <PlayerBalanceCard {player} onSelect={onPlayerSelect} selectedIndex={selectedIndexes.indexOf(player.id) + 1} />
   {/each}
