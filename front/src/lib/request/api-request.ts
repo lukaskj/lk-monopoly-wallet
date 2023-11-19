@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { plainToInstance } from "class-transformer";
+import { PaginatedData } from "../dto";
 import { isNullOrUndefined } from "../helpers/is-null-or-undefined";
 import { Notification } from "../notification";
 import { StatusCodes } from "../status-codes";
 import type { AnyType, ClassConstructor } from "../types";
 import { backendApiEndpoint } from "./backend-api-endpoint";
-import { PaginatedData } from "../dto";
 
 type TRequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -105,11 +105,15 @@ export class ApiRequest {
 
   public async getPaginated<T>(
     page: number = 1,
-    limit: number = 20,
-    params?: Record<string, AnyType>,
+    limit: number = 200,
+    transformTo?: ClassConstructor<T>,
   ): Promise<PaginatedData<T>> {
-    this.queryParams = { ...this.queryParams, page, limit, ...params };
-    return this.execute(PaginatedData<T>);
+    this.queryParams = { ...this.queryParams, page, limit };
+    const response = await this.execute(PaginatedData<T>);
+    if (!isNullOrUndefined(transformTo)) {
+      response.data = [...plainToInstance(transformTo, response.data)];
+    }
+    return response;
   }
 
   public async get<T>(transformTo?: ClassConstructor<T>): Promise<T> {
