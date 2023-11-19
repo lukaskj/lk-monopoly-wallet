@@ -4,7 +4,6 @@
   import { ApiRequest } from "$lib/request/api-request";
   import { layoutTitleStore } from "$lib/stores/layout-title.store";
   import { Paginator, type PaginationSettings } from "@skeletonlabs/skeleton";
-  import type { PageData } from "./$types";
   import { loadingStore } from "$lib/stores/loading.store";
   import { onMount } from "svelte";
   $layoutTitleStore = "Partidas";
