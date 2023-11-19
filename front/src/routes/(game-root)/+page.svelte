@@ -6,6 +6,7 @@
   import { Paginator, type PaginationSettings } from "@skeletonlabs/skeleton";
   import { loadingStore } from "$lib/stores/loading.store";
   import { onMount } from "svelte";
+  import { ApiProxy } from "$lib/request/api-proxy";
   $layoutTitleStore = "Partidas";
 
   let pageData: PaginatedData<Game> = {
@@ -23,7 +24,7 @@
   async function getGames(page: number) {
     try {
       $loadingStore = true;
-      const response = await new ApiRequest(fetch)
+      const response = await new ApiProxy()
         .endpoint("/game", { finished: false })
         .getPaginated(page, paginationSettings.limit, Game);
       pageData = response;

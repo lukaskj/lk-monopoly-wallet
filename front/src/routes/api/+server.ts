@@ -20,8 +20,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
   const body = requestData.body;
   const headers = requestData.headers;
 
-  console.log(env.CU);
-
   const fullUrl = apiEndpoint(env.BACKEND_BASE_URL, endpoint, queryParams);
 
   const response = await fetch(fullUrl, {
