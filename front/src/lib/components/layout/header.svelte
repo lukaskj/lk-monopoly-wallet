@@ -17,7 +17,7 @@
   <svelte:fragment slot="lead">
     <!-- <i class="icon:wallet" /> -->
     <button class="lg:hidden btn btn-sm mr-4" on:click={drawerOpen}>
-      <i class="game-icons:hamburger-menu"></i>
+      <i class="icon:menu"></i>
     </button>
   </svelte:fragment>
   <strong class="text-xl">{$layoutTitleStore}</strong>
