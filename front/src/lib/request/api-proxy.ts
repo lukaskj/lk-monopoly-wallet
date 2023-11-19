@@ -28,7 +28,9 @@ export class ApiProxy {
   constructor() {}
 
   public static setFetch(fetch: FetchType): void {
-    this.fetch = fetch;
+    if (isNullOrUndefined(this.fetch)) {
+      this.fetch = fetch;
+    }
   }
 
   public endpoint(endpoint: string, queryParams?: Record<string, AnyType>): this {
