@@ -1,8 +1,7 @@
 <script lang="ts">
+  import { layoutTitleStore } from "$lib/stores/layout-title.store";
   import { ApiRequest } from "../lib/request/api-request";
-  let list: string[] = ["foo", "bar", "fizz", "buzz"];
-
-  let games: { name: string }[] = [];
+  $layoutTitleStore = "Jogos";
 
   async function getGames() {
     const response = await new ApiRequest(fetch).endpoint("/game").getPaginated();
