@@ -23,7 +23,6 @@ export class ApiRequest {
   private _body: BodyInit | null = null;
   private queryParams?: Record<string, AnyType>;
   private headers: Record<string, string> = {};
-  private redirectToLoginOnForbidden: boolean = true;
   private defaultHeaders: Record<string, string> = { "Content-Type": "application/json" };
   protected _method: TRequestMethod = "GET";
 
@@ -137,7 +136,6 @@ export class ApiRequest {
   }
 
   public doNotRedirectToLoginOnForbidden(): ApiRequest {
-    this.redirectToLoginOnForbidden = false;
     return this;
   }
 }
