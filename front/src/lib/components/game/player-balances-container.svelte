@@ -4,10 +4,11 @@
 
   export let players: PlayerBalance[];
   export let selectedPlayers: PlayerBalance[] = [];
+  export let onPlayerSelect: (player: PlayerBalance, selected: boolean) => void = () => {};
 
   let selectedIndexes: number[] = [];
 
-  function onPlayerSelect(player: PlayerBalance, selected: boolean) {
+  function _onPlayerSelect(player: PlayerBalance, selected: boolean) {
     let playerIndex = selectedPlayers.findIndex((p) => p.id === player.id);
     if (playerIndex >= 0) {
       if (!selected) {
@@ -20,11 +21,13 @@
     }
 
     selectedIndexes = selectedPlayers.map((i) => i.id);
+
+    onPlayerSelect(player, selected);
   }
 </script>
 
 <div class="flex flex-row space-x-2 justify-between flex-wrap">
   {#each players as player}
-    <PlayerBalanceCard {player} onSelect={onPlayerSelect} selectedIndex={selectedIndexes.indexOf(player.id) + 1} />
+    <PlayerBalanceCard {player} onSelect={_onPlayerSelect} selectedIndex={selectedIndexes.indexOf(player.id) + 1} />
   {/each}
 </div>
