@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import type { Player } from "./player.dto";
+import { Player } from "./player.dto";
 
 export class Game {
   id!: number;
@@ -9,5 +9,6 @@ export class Game {
   @Type(() => Date)
   createdAt!: Date;
 
+  @Type(() => Player)
   players!: Player[];
 }
