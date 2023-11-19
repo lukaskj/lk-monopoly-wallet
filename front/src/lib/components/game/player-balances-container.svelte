@@ -9,6 +9,11 @@
     for (const p of selectedPlayers) {
       _onPlayerSelect(p, false);
     }
+    selectedIndexes = [];
+    const clearChildSelections = Object.values(_clearChildSelection);
+    for (const c of clearChildSelections) {
+      c && c();
+    }
   };
 
   $: selectedIndexes = [] as number[];
@@ -27,15 +32,22 @@
 
     selectedIndexes = selectedPlayers.map((i) => i.id);
 
-    onPlayerSelect(player, selected);
+    onPlayerSelect && onPlayerSelect(player, selected);
   }
   $: {
     selectedIndexes;
   }
+
+  let _clearChildSelection: { [key: number]: () => void } = {};
 </script>
 
 <div class="flex flex-row space-x-2 justify-between flex-wrap select-none">
   {#each players as player}
-    <PlayerBalanceCard {player} onSelect={_onPlayerSelect} selectedIndex={selectedIndexes.indexOf(player.id) + 1} />
+    <PlayerBalanceCard
+      {player}
+      onSelect={_onPlayerSelect}
+      selectedIndex={selectedIndexes.indexOf(player.id) + 1}
+      bind:clear={_clearChildSelection[player.id]}
+    />
   {/each}
 </div>
