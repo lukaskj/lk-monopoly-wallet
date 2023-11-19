@@ -77,7 +77,7 @@ export class ApiProxy {
     if (!isNullOrUndefined(this._body)) {
       requestParams.body = this._body;
     }
-    console.log(body);
+
     requestParams.body = JSON.stringify(body);
 
     const response = await ApiProxy.fetch("/api", requestParams);
