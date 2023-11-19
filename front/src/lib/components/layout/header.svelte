@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { appbarTrailStore } from "$lib/stores/appbar-trail.store";
+  import { appbarTrailParamsStore, appbarTrailStore } from "$lib/stores/appbar-trail.store";
   import { AppBar, getDrawerStore } from "@skeletonlabs/skeleton";
   import { layoutTitleStore } from "../../stores/layout-title.store";
   // import IconWallet from "~icons/game-icons/wallet";
@@ -22,6 +22,6 @@
   </svelte:fragment>
   <strong class="text-xl">{$layoutTitleStore}</strong>
   <svelte:fragment slot="trail">
-    <svelte:component this={$appbarTrailStore} />
+    <svelte:component this={$appbarTrailStore} param={$appbarTrailParamsStore} />
   </svelte:fragment>
 </AppBar>
