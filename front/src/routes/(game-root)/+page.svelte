@@ -5,14 +5,14 @@
   import { layoutTitleStore } from "$lib/stores/layout-title.store";
   import { Paginator, type PaginationSettings } from "@skeletonlabs/skeleton";
   import type { PageData } from "./$types";
+  import { loadingStore } from "$lib/stores/loading.store";
+  import { onMount } from "svelte";
   $layoutTitleStore = "Partidas";
 
   let pageData: PaginatedData<Game> = {
     data: [],
     meta: {} as any,
   };
-
-  $: loading = false;
 
   let paginationSettings = {
     page: 0,
@@ -23,7 +23,7 @@
 
   async function getGames(page: number) {
     try {
-      loading = true;
+      $loadingStore = true;
       const response = await new ApiRequest(fetch)
         .endpoint("/game", { finished: false })
         .getPaginated(page, paginationSettings.limit, Game);
@@ -34,7 +34,7 @@
     } catch (error) {
       console.error(error);
     } finally {
-      // loading = false;
+      $loadingStore = false;
     }
   }
 
@@ -42,7 +42,9 @@
     getGames(paginationSettings.page + 1);
   }
 
-  getGames(1);
+  onMount(() => {
+    getGames(1);
+  });
 </script>
 
 <div class="container p-4 space-y-4">
