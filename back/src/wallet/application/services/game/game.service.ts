@@ -58,6 +58,9 @@ export class GameService {
       where: {
         id,
       },
+      include: {
+        players: true,
+      },
     });
 
     if (isNullOrUndefined(game)) {
