@@ -5,8 +5,13 @@
   export let players: PlayerBalance[];
   export let selectedPlayers: PlayerBalance[] = [];
   export let onPlayerSelect: (player: PlayerBalance, selected: boolean) => void = () => {};
+  export const clearSelection = () => {
+    for (const p of selectedPlayers) {
+      _onPlayerSelect(p, false);
+    }
+  };
 
-  let selectedIndexes: number[] = [];
+  $: selectedIndexes = [] as number[];
 
   function _onPlayerSelect(player: PlayerBalance, selected: boolean) {
     let playerIndex = selectedPlayers.findIndex((p) => p.id === player.id);
@@ -24,9 +29,12 @@
 
     onPlayerSelect(player, selected);
   }
+  $: {
+    selectedIndexes;
+  }
 </script>
 
-<div class="flex flex-row space-x-2 justify-between flex-wrap">
+<div class="flex flex-row space-x-2 justify-between flex-wrap select-none">
   {#each players as player}
     <PlayerBalanceCard {player} onSelect={_onPlayerSelect} selectedIndex={selectedIndexes.indexOf(player.id) + 1} />
   {/each}

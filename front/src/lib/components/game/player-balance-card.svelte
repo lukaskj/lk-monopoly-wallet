@@ -14,9 +14,8 @@
 </script>
 
 <div
-  class="player-card card relative max-w-xs border-2 rounded-lg flex flex-col justify-between {selected
-    ? 'border-primary-500'
-    : ''}"
+  class="player-card card relative max-w-xs border-2 rounded-lg flex flex-col justify-between
+  {selected ? 'border-primary-500' : ''}"
   on:click={toggleSelected}
   on:keydown={toggleSelected}
   role="button"
