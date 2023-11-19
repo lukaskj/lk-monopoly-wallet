@@ -26,8 +26,11 @@
   }
 
   async function onAmountConfirm(_amount: number) {
-    const operation = Math.sign(amount);
+    let operation = Math.sign(amount);
     const realAmount = Math.abs(amount);
+    if (selectedPlayers.length === 2) {
+      operation = -1;
+    }
     const firstPlayer = selectedPlayers[0];
     if (firstPlayer && data.createPlayerTransaction) {
       await data.createPlayerTransaction(firstPlayer, realAmount, operation, "1234");
