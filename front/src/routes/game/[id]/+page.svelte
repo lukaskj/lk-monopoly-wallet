@@ -1,5 +1,6 @@
 <script lang="ts">
   import GameTransactions from "$lib/components/game/game-transactions.svelte";
+  import PlayerBalanceCard from "$lib/components/game/player-balance-card.svelte";
   import PlayerBalancesContainer from "$lib/components/game/player-balances-container.svelte";
   import TransactionKeyboard from "$lib/components/game/transaction-keyboard.svelte";
   import type { PlayerBalance } from "$lib/dto";
@@ -14,7 +15,7 @@
 
   let amount = 0;
 
-  $: selectedPlayers = [];
+  $: selectedPlayers = [] as PlayerBalance[];
   $: confirmEnabled = false;
 
   function onPlayerSelect(player: PlayerBalance, selected: boolean) {
@@ -25,6 +26,23 @@
   }
 
   async function onAmountConfirm(_amount: number) {
+    const operation = Math.sign(amount);
+    const realAmount = Math.abs(amount);
+    const firstPlayer = selectedPlayers[0];
+    if (firstPlayer && data.createPlayerTransaction) {
+      await data.createPlayerTransaction(firstPlayer, realAmount, operation, "1234");
+    }
+
+    const secondPlayer = selectedPlayers[1];
+    if (secondPlayer && data.createPlayerTransaction) {
+      await data.createPlayerTransaction(secondPlayer, realAmount, operation * -1, "1234");
+    }
+
+    reloadData();
+    clearPlayerSelections && clearPlayerSelections();
+  }
+
+  async function reloadData() {
     loadingStore.set(true);
     if (data.getBalance) {
       players = await data.getBalance(data.id);
@@ -35,8 +53,6 @@
     }
     amount = 0;
     selectedPlayers = [];
-
-    clearPlayerSelections && clearPlayerSelections();
   }
 
   let clearPlayerSelections: () => void;
