@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores";
+  import { goto } from "$app/navigation";
   import { appbarTrailParamsStore, appbarTrailStore } from "$lib/stores/appbar-trail.store";
   import { AppBar, getDrawerStore } from "@skeletonlabs/skeleton";
   import { layoutTitleStore } from "../../stores/layout-title.store";
@@ -11,10 +12,8 @@
   }
 
   function goBack(): void {
-    history.back();
+    goto("/");
   }
-
-  $appbarTrailStore = null;
 </script>
 
 <AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" shadow="shadow-2xl" slotTrail="place-content-end">

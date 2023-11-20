@@ -39,7 +39,9 @@
   <!-- (sidebarRight) -->
   <!-- (pageHeader) -->
   <!-- Router Slot -->
-  <slot />
+  <div class="p-4">
+    <slot />
+  </div>
   <!-- ---- / ---- -->
   <svelte:fragment slot="pageFooter">LK Monopoly Wallet</svelte:fragment>
   <!-- (footer) -->

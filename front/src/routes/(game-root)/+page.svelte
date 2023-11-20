@@ -1,5 +1,6 @@
 <script lang="ts">
   import GameCard from "$lib/components/game/game-card.svelte";
+  import NewGameTrailButton from "$lib/components/layout/appbar-trail/new-game-trail-button.svelte";
   import { Game, type PaginatedData } from "$lib/dto";
   import { ApiProxy } from "$lib/request/api-proxy";
   import { appbarTrailParamsStore, appbarTrailStore } from "$lib/stores/appbar-trail.store";
@@ -46,11 +47,13 @@
     getGames(1);
   });
 
-  appbarTrailStore.set(null);
-  appbarTrailParamsStore.set(null);
+  onMount(() => {
+    appbarTrailStore.set(NewGameTrailButton);
+    appbarTrailParamsStore.set(null);
+  });
 </script>
 
-<div class="container p-4 space-y-4">
+<div class="container space-y-4">
   {#each pageData.data as game}
     <GameCard {game} />
   {/each}

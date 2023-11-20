@@ -1,7 +1,6 @@
 <script lang="ts">
   export let param: string;
-
-  console.log("PARAMMM", param);
+  param;
 </script>
 
 <i class="icon:cog"></i>

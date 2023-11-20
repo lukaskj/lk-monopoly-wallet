@@ -5,16 +5,15 @@
   import GamePasswordTrailButton from "$lib/components/layout/appbar-trail/game-password-trail-button.svelte";
   import type { PlayerBalance } from "$lib/dto";
   import { appbarTrailParamsStore, appbarTrailStore } from "$lib/stores/appbar-trail.store";
+  import { gamePasswordStore } from "$lib/stores/game-password.store";
   import { layoutTitleStore } from "$lib/stores/layout-title.store";
   import { loadingStore } from "$lib/stores/loading.store";
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
   import type { TGameData } from "./types";
-  import { gamePasswordStore } from "$lib/stores/game-password.store";
 
   export let data: PageData;
   let { game, players, transactions } = data.gameData as TGameData;
-  layoutTitleStore.set(game.name);
 
   let amount = 0;
 
@@ -64,6 +63,7 @@
   let clearPlayerSelections: () => void;
 
   onMount(() => {
+    layoutTitleStore.set(game.name);
     if (game.hasPassword) {
       appbarTrailStore.set(GamePasswordTrailButton);
       appbarTrailParamsStore.set(game.id);
@@ -74,7 +74,7 @@
   });
 </script>
 
-<div class="p-4 space-y-4">
+<div class="space-y-4">
   <PlayerBalancesContainer {players} {selectedPlayers} {onPlayerSelect} bind:clearSelection={clearPlayerSelections} />
   {#if !game.hasPassword || (game.hasPassword && $gamePasswordStore[game.id])}
     <TransactionKeyboard bind:value={amount} {confirmEnabled} onConfirm={onAmountConfirm} />
