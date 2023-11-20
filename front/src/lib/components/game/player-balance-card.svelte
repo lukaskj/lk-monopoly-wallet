@@ -18,8 +18,7 @@
 </script>
 
 <div
-  class="player-card card relative max-w-xs border-2 rounded-lg flex flex-col justify-between
-  {selected ? 'border-primary-500' : ''}"
+  class="player-card {selected ? 'border-blue-600' : ''}"
   on:click={toggleSelected}
   on:keydown={toggleSelected}
   role="button"
@@ -31,15 +30,22 @@
   <header class="card-header font-bold">{player.name}</header>
   <section class="pl-4 pr-4 pt-1 pb-1"></section>
   <footer class="card-footer flex justify-end items-center p-0">
-    <button class="btn btn-sm variant-filled-tertiary w-full font-bold rounded-b-md text-lg">
+    <button class="balance-button">
       {CurrencyFormatter.format(player.balance)}
     </button>
   </footer>
 </div>
 
-<style>
+<style type="postcss">
   .player-card {
     max-width: 150px;
     min-width: 150px;
+    min-height: 100px;
+
+    @apply card relative max-w-xs border-2 rounded-lg flex flex-col justify-between;
+  }
+
+  .balance-button {
+    @apply btn btn-sm variant-filled-tertiary w-full font-bold rounded-b-md text-lg select-none;
   }
 </style>

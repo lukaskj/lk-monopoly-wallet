@@ -41,7 +41,7 @@
   let _clearChildSelection: { [key: number]: () => void } = {};
 </script>
 
-<div class="flex flex-row space-x-2 justify-between flex-wrap select-none">
+<div class="flex flex-row gap-4 justify-between flex-wrap select-none">
   {#each players as player}
     <PlayerBalanceCard
       {player}
