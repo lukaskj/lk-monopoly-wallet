@@ -23,8 +23,7 @@ services:
     environment:
       - BACKEND_BASE_URL=http://monopoly-wallet-backend:3000/v1
     ports:
-      - 3001:3000
+      - 5000:4000
     volumes:
-      - ./temp:/app/database
       - ./scripts:/app/scripts
-    command: ['sh', '/app/scripts/start-back.sh']
+    command: ['node', '/app/index.js']

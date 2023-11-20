@@ -1,1 +1,18 @@
-FROM node:20.9.0-alpine
+FROM node:20.9.0-alpine as build
+WORKDIR /build
+COPY ./front .
+RUN npm i -g pnpm
+RUN pnpm i && \
+  pnpm build && \
+  echo '{"type": "module"}' > /build/build/package.json 
+
+
+
+FROM build
+WORKDIR /app
+COPY --from=build /build/build .
+
+ENV PORT=4000
+EXPOSE 4000
+
+CMD ["node", "index.js"]

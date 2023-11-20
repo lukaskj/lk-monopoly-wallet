@@ -10,9 +10,7 @@ RUN pnpm i && \
 
 
 FROM build
-
 WORKDIR /app
-
 COPY --from=build /build/dist .
 
 RUN npm i -g prisma@5.5.2
