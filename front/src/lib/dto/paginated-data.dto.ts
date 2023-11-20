@@ -1,12 +1,5 @@
 import { Type } from "class-transformer";
 
-export class PaginatedData<T> {
-  public data!: T[];
-
-  @Type(() => PaginationMetadata)
-  public meta!: PaginationMetadata;
-}
-
 class PaginationMetadata {
   public hasNextPage!: boolean;
   public hasPreviousPage!: boolean;
@@ -14,4 +7,11 @@ class PaginationMetadata {
   public page!: number;
   public pageCount!: number;
   public total!: number;
+}
+
+export class PaginatedData<T> {
+  public data!: T[];
+
+  @Type(() => PaginationMetadata)
+  public meta!: PaginationMetadata;
 }
