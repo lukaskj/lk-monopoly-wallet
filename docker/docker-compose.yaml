@@ -15,3 +15,16 @@ services:
       - ./temp:/app/database
       - ./scripts:/app/scripts
     command: ['sh', '/app/scripts/start-back.sh']
+  monopoly-wallet-frontend:
+    image: monopoly-wallet-frontend
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile.front
+    environment:
+      - BACKEND_BASE_URL=http://monopoly-wallet-backend:3000/v1
+    ports:
+      - 3001:3000
+    volumes:
+      - ./temp:/app/database
+      - ./scripts:/app/scripts
+    command: ['sh', '/app/scripts/start-back.sh']

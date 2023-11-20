@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { env } from "$env/dynamic/private";
 import { apiEndpoint } from "$lib/request/api-endpoint";
 import type { AnyType } from "$lib/types";
