@@ -18,6 +18,9 @@ export class GameViewModel {
 
   @Expose()
   createdAt!: Date;
+
+  @Expose()
+  hasPassword: boolean = false;
 }
 
 // const a: Game;

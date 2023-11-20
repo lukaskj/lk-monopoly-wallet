@@ -1,5 +1,6 @@
 import { RealIP } from "@common/decorators/real-ip.decorator";
 import { SerializeTo } from "@common/decorators/serialize-to";
+import { isNullOrEmptyOrUndefined } from "@common/helpers/is-null-or-undefined";
 import { Pagination } from "@common/pagination/pagination";
 import { NotEmptyPipe } from "@common/pipes/not-empty.pipe";
 import { Body, Controller, Delete, Get, Headers, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
@@ -7,11 +8,11 @@ import { GameService } from "../../../application/services/game/game.service";
 import { PlayerService } from "../../../application/services/player/player.service";
 import { TransactionService } from "../../../application/services/transaction/transaction.service";
 import { GameViewModel } from "../../viewmodels/game/game.viewmodel";
+import { PlayerBalanceViewModel } from "../../viewmodels/game/player-balance.viewmodel";
 import { PlayerViewModel } from "../../viewmodels/game/player.viewmodel";
 import { CreateGamePlayerViewmodel } from "../../viewmodels/game/request/create-game-player.viewmodel";
 import { CreateGameViewmodel } from "../../viewmodels/game/request/create-game.viewmodel";
 import { FilterGameViewmodel } from "../../viewmodels/game/request/filter-game.viewmodel";
-import { PlayerBalanceViewModel } from "../../viewmodels/game/player-balance.viewmodel";
 
 @Controller("/v1/game")
 export class GameController {
@@ -31,8 +32,9 @@ export class GameController {
 
   @Get(":id")
   @SerializeTo(GameViewModel)
-  public async getGame(@Param("id", NotEmptyPipe, ParseIntPipe) id: number) {
-    return await this.gameService.getGameById(id);
+  public async getGameById(@Param("id", NotEmptyPipe, ParseIntPipe) id: number) {
+    const game = await this.gameService.getGameById(id);
+    return { ...game, hasPassword: !isNullOrEmptyOrUndefined(game.password) };
   }
 
   @Post("")
