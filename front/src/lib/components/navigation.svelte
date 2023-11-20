@@ -11,6 +11,5 @@
 <nav class="list-nav p-4">
   <ul>
     <li><a href="/" on:click={drawerClose}>Jogos</a></li>
-    <li><a href="/about" on:click={drawerClose}>About</a></li>
   </ul>
 </nav>
