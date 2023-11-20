@@ -102,6 +102,53 @@ describe("TransactionService", () => {
       expect($addPlayerTransaction).toHaveBeenCalledWith(createTransactionDto, mockPlayer.id, mockTransaction.ip);
     });
 
+    it("should create a valid transaction if game password is empty", async () => {
+      // given
+      const password = faker.string.alphanumeric(50);
+      const mockGame = _fixtureGame({
+        password: undefined,
+      });
+
+      const mockPlayer = _fixturePlayer({
+        gameId: mockGame.id,
+      });
+
+      const mockTransaction = _fixtureTransaction({
+        playerId: mockPlayer.id,
+      });
+
+      const createTransactionDto = {
+        amount: mockTransaction.amount,
+        operation: mockTransaction.operation,
+      };
+
+      const playerService = mock<PlayerService>();
+      playerService.getPlayerById.mockResolvedValueOnce(mockPlayer);
+
+      const gameService = mock<GameService>();
+      gameService.getGameById.mockResolvedValueOnce(mockGame);
+
+      const transactionRepository = mock<TransactionRepository>();
+
+      const service = new TransactionService(playerService, gameService, transactionRepository);
+
+      const $addPlayerTransaction = jest.spyOn(service, "addPlayerTransaction").mockResolvedValueOnce(mockTransaction);
+
+      // when
+      const result = await service.addPlayerTransactionCheckingPassword(
+        password,
+        createTransactionDto,
+        mockPlayer.id,
+        mockTransaction.ip as string,
+      );
+
+      // then
+      expect(result).toMatchObject(mockTransaction);
+      expect(playerService.getPlayerById).toHaveBeenCalledWith(mockPlayer.id);
+      expect(gameService.getGameById).toHaveBeenCalledWith(mockGame.id);
+      expect($addPlayerTransaction).toHaveBeenCalledWith(createTransactionDto, mockPlayer.id, mockTransaction.ip);
+    });
+
     it("should throw if password mismatch", async () => {
       // given
       const password = faker.string.alphanumeric(50);

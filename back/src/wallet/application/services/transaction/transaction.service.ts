@@ -5,6 +5,7 @@ import { CreateTransactionDto } from "../../dto/create-transaction.dto";
 import { GameService } from "../game/game.service";
 import { PlayerService } from "../player/player.service";
 import { FilterTransactionsDto } from "../../dto/filter-transactions.dto";
+import { isNullOrEmptyOrUndefined } from "@common/helpers/is-null-or-undefined";
 
 @Injectable()
 export class TransactionService {
@@ -40,7 +41,7 @@ export class TransactionService {
 
     const game = await this.gameService.getGameById(player.gameId);
 
-    if (game.password !== password) {
+    if (!isNullOrEmptyOrUndefined(game.password) && game.password !== password) {
       throw new UnauthorizedException("Wrong password.");
     }
 
