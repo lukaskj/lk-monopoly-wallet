@@ -2,7 +2,7 @@
   import GameCard from "$lib/components/game/game-card.svelte";
   import { Game, type PaginatedData } from "$lib/dto";
   import { ApiProxy } from "$lib/request/api-proxy";
-  import { appbarTrailParamsStore } from "$lib/stores/appbar-trail.store";
+  import { appbarTrailParamsStore, appbarTrailStore } from "$lib/stores/appbar-trail.store";
   import { layoutTitleStore } from "$lib/stores/layout-title.store";
   import { loadingStore } from "$lib/stores/loading.store";
   import { Paginator, type PaginationSettings } from "@skeletonlabs/skeleton";
@@ -46,6 +46,7 @@
     getGames(1);
   });
 
+  appbarTrailStore.set(null);
   appbarTrailParamsStore.set(null);
 </script>
 

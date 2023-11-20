@@ -5,6 +5,7 @@ export class Game {
   id!: number;
   name!: string;
   finished!: boolean;
+  hasPassword!: boolean;
 
   @Type(() => Date)
   createdAt!: Date;

@@ -1,13 +1,16 @@
 <script lang="ts">
   import GameTransactions from "$lib/components/game/game-transactions.svelte";
-  import PlayerBalanceCard from "$lib/components/game/player-balance-card.svelte";
   import PlayerBalancesContainer from "$lib/components/game/player-balances-container.svelte";
   import TransactionKeyboard from "$lib/components/game/transaction-keyboard.svelte";
+  import GamePasswordTrailButton from "$lib/components/layout/appbar-trail/game-password-trail-button.svelte";
   import type { PlayerBalance } from "$lib/dto";
+  import { appbarTrailParamsStore, appbarTrailStore } from "$lib/stores/appbar-trail.store";
   import { layoutTitleStore } from "$lib/stores/layout-title.store";
   import { loadingStore } from "$lib/stores/loading.store";
+  import { onMount } from "svelte";
   import type { PageData } from "./$types";
   import type { TGameData } from "./types";
+  import { gamePasswordStore } from "$lib/stores/game-password.store";
 
   export let data: PageData;
   let { game, players, transactions } = data.gameData as TGameData;
@@ -33,12 +36,12 @@
     }
     const firstPlayer = selectedPlayers[0];
     if (firstPlayer && data.createPlayerTransaction) {
-      await data.createPlayerTransaction(firstPlayer, realAmount, operation, "1234");
+      await data.createPlayerTransaction(firstPlayer, realAmount, operation, $gamePasswordStore[game.id]);
     }
 
     const secondPlayer = selectedPlayers[1];
     if (secondPlayer && data.createPlayerTransaction) {
-      await data.createPlayerTransaction(secondPlayer, realAmount, operation * -1, "1234");
+      await data.createPlayerTransaction(secondPlayer, realAmount, operation * -1, $gamePasswordStore[game.id]);
     }
 
     reloadData();
@@ -59,10 +62,22 @@
   }
 
   let clearPlayerSelections: () => void;
+
+  onMount(() => {
+    if (game.hasPassword) {
+      appbarTrailStore.set(GamePasswordTrailButton);
+      appbarTrailParamsStore.set(game.id);
+    } else {
+      appbarTrailStore.set(null);
+      appbarTrailParamsStore.set(null);
+    }
+  });
 </script>
 
 <div class="p-4 space-y-4">
   <PlayerBalancesContainer {players} {selectedPlayers} {onPlayerSelect} bind:clearSelection={clearPlayerSelections} />
-  <TransactionKeyboard bind:value={amount} {confirmEnabled} onConfirm={onAmountConfirm} />
+  {#if !game.hasPassword || (game.hasPassword && $gamePasswordStore[game.id])}
+    <TransactionKeyboard bind:value={amount} {confirmEnabled} onConfirm={onAmountConfirm} />
+  {/if}
   <GameTransactions transactions={transactions.data} />
 </div>
