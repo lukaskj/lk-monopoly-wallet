@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  monopoly-wallet-backend:
+    image: monopoly-wallet-backend
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile.back
+    environment:
+      - DB_TYPE=sqlite
+      - DB_DATABASE=file:/app/database/db.db
+    ports:
+      - 3001:3000
+    volumes:
+      - ./temp:/app/database
+      - ./scripts:/app/scripts
+    command: ['sh', '/app/scripts/start-back.sh']
