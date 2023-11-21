@@ -23,7 +23,7 @@ const config = {
     tailwindcss_forms,
     skeleton({
       themes: {
-        preset: ["skeleton", "hamlindigo", "modern"],
+        preset: ["skeleton", "hamlindigo", "modern", "crimson"],
         custom: [MainTheme],
       },
     }),
