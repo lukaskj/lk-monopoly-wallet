@@ -1,19 +1,19 @@
 FROM node:20.9.0-alpine as build
 WORKDIR /build
 COPY ./back .
+ENV DB_DATABASE=file:/temp/db.db
 RUN npm i -g pnpm
 RUN npm i -g prisma@5.5.2
 RUN pnpm i && \
-  npx prisma migrate deploy --schema=./prisma/schema.prisma && \
   pnpm build:prod
-
 
 
 FROM build
 WORKDIR /app
 COPY --from=build /build/dist .
-
+ENV DB_DATABASE=file:/app/database.db
 RUN npm i -g prisma@5.5.2
+RUN npx prisma migrate deploy --schema=./prisma/schema.prisma
 
 EXPOSE 3000
 
