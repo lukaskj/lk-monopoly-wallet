@@ -45,7 +45,7 @@
     <button on:click={() => addAmount(10000)}>10000</button>
   </div>
   <button
-    class="btn variant-filled-primary w-full text-3xl"
+    class="btn variant-filled-success w-full text-3xl"
     disabled={!confirmEnabled}
     on:click={() => onConfirm && onConfirm(value)}
   >
@@ -59,7 +59,7 @@
   }
   .n-key button,
   .toggle-operation {
-    @apply btn variant-filled-secondary 
+    @apply btn variant-filled-tertiary 
     rounded-lg text-3xl
     transition-all duration-500;
   }
