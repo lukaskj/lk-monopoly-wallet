@@ -43,6 +43,6 @@
     <slot />
   </div>
   <!-- ---- / ---- -->
-  <svelte:fragment slot="pageFooter">LK Monopoly Wallet</svelte:fragment>
+  <svelte:fragment slot="pageFooter"><span class="pl-4 pr-4">LK Monopoly Wallet</span></svelte:fragment>
   <!-- (footer) -->
 </AppShell>
