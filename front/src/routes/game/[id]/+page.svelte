@@ -108,7 +108,7 @@
   </div>
   {#if hasPassword}
     <div>
-      <button class="btn w-full variant-filled-error mt-8" on:click={endGame}>Finalizar</button>
+      <button class="btn w-full variant-filled-error mt-8" on:click={endGame}>Finalizarr</button>
     </div>
   {/if}
 </div>
