@@ -52,7 +52,6 @@
   }
 
   async function reloadData() {
-    loadingStore.set(true);
     if (data.getBalance) {
       players = await data.getBalance(data.id);
     }

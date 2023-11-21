@@ -26,23 +26,11 @@ async function getGameData(id: number): Promise<TGameData> {
 }
 
 async function getBalance(id: number): Promise<PlayerBalance[]> {
-  try {
-    loadingStore.set(true);
-    const response = await new ApiProxy().endpoint(`/game/${id}/balance`).get<PlayerBalance[]>();
-    return response;
-  } finally {
-    loadingStore.set(false);
-  }
+  return await new ApiProxy().endpoint(`/game/${id}/balance`).get<PlayerBalance[]>();
 }
 
 async function getTransactions(id: number): Promise<PaginatedData<Transaction>> {
-  try {
-    loadingStore.set(true);
-    const response = await new ApiProxy().endpoint(`/game/${id}/transactions`).getPaginated(1, 10, Transaction);
-    return response;
-  } finally {
-    loadingStore.set(false);
-  }
+  return await new ApiProxy().endpoint(`/game/${id}/transactions`).getPaginated(1, 10, Transaction);
 }
 
 async function endGame(id: number, password?: string) {
@@ -88,9 +76,9 @@ export const load = (async ({ params, fetch }) => {
 
   return {
     id: gameId,
+    gameData,
     getBalance,
     getTransactions,
-    gameData,
     createPlayerTransaction,
     endGame,
   };
