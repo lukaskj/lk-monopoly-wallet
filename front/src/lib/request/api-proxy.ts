@@ -85,14 +85,18 @@ export class ApiProxy {
     const response = await ApiProxy.fetch("/api", requestParams);
 
     const statusCode = response.status;
+    const statusText = response.statusText;
 
     if (statusCode === StatusCodes.FORBIDDEN || statusCode === StatusCodes.UNAUTHORIZED) {
       const json = (await response.json()) as { message?: string; statusCode: number };
-      const message = json?.message || StatusCodes[statusCode].toString();
+      const message = json?.message ?? statusText ?? StatusCodes[statusCode].toString();
 
       Notification.error(message);
+      // return {} as T;
+    }
 
-      return {} as T;
+    if (statusCode > 399) {
+      throw response;
     }
 
     let json: any = { message: "Error" };
