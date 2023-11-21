@@ -102,7 +102,7 @@
       bind:clearSelection={clearPlayerSelections}
     />
     {#if hasPassword}
-      <TransactionKeyboard bind:value={amount} {confirmEnabled} onConfirm={onAmountConfirm} />
+      <TransactionKeyboard bind:value={amount} confirmEnabled={confirmEnabled && !$loadingStore} onConfirm={onAmountConfirm}/>
     {/if}
     <GameTransactions transactions={transactions.data} />
   </div>
