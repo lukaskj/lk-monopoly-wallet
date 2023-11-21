@@ -45,9 +45,6 @@
 
   onMount(() => {
     getGames(1);
-  });
-
-  onMount(() => {
     appbarTrailStore.set(NewGameTrailButton);
     appbarTrailParamsStore.set(null);
   });

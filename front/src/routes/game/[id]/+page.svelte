@@ -2,7 +2,7 @@
   import GameTransactions from "$lib/components/game/game-transactions.svelte";
   import PlayerBalancesContainer from "$lib/components/game/player-balances-container.svelte";
   import TransactionKeyboard from "$lib/components/game/transaction-keyboard.svelte";
-  import GamePasswordTrailButton from "$lib/components/layout/appbar-trail/game-password-trail-button.svelte";
+  import GameTrailButtons from "$lib/components/layout/appbar-trail/game/game-trail-buttons.svelte";
   import type { PlayerBalance } from "$lib/dto";
   import { appbarTrailParamsStore, appbarTrailStore } from "$lib/stores/appbar-trail.store";
   import { gamePasswordStore } from "$lib/stores/game-password.store";
@@ -64,13 +64,8 @@
 
   onMount(() => {
     layoutTitleStore.set(game.name);
-    if (game.hasPassword) {
-      appbarTrailStore.set(GamePasswordTrailButton);
-      appbarTrailParamsStore.set(game.id);
-    } else {
-      appbarTrailStore.set(null);
-      appbarTrailParamsStore.set(null);
-    }
+    appbarTrailStore.set(GameTrailButtons);
+    appbarTrailParamsStore.set(game);
   });
 </script>
 
