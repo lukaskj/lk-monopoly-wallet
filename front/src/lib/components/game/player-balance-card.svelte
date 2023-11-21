@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { PlayerBalance } from "$lib/dto";
   import { CurrencyFormatter } from "$lib/helpers/currency-formatter";
+  import { fontColorFromBgColor } from "$lib/helpers/hex-to-luminance";
 
   export let player: PlayerBalance;
   export let selected: boolean = false;
@@ -15,19 +16,23 @@
     selected = !selected;
     onSelect && onSelect(player, selected);
   }
+
+  const fontColorFromPlayerBgColor = fontColorFromBgColor(player.color ?? "#FFFFFF");
+  console.log({ fontColorFromPlayerBgColor, color: player.color });
 </script>
 
 <div
   class="player-card {selected ? 'border-blue-600' : ''}"
   on:click={toggleSelected}
   on:keydown={toggleSelected}
+  style="background-color: {player.color};"
   role="button"
   tabindex="0"
 >
   {#if selectedIndex > 0}
     <span class="badge-icon variant-filled-warning absolute -top-0 -right-0 z-10">{selectedIndex}º</span>
   {/if}
-  <header class="card-header font-bold">{player.name}</header>
+  <header class="card-header font-bold" style="color: {fontColorFromPlayerBgColor};">{player.name}</header>
   <section class="pl-4 pr-4 pt-1 pb-1"></section>
   <footer class="card-footer flex justify-end items-center p-0">
     <button class="balance-button">
