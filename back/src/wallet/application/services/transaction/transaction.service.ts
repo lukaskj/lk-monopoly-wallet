@@ -1,11 +1,14 @@
+import { isNullOrEmptyOrUndefined } from "@common/helpers/is-null-or-undefined";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { Transaction } from "@prisma/client";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { Prisma, Transaction } from "@prisma/client";
 import { TransactionRepository } from "../../../infrastructure/repositories";
 import { CreateTransactionDto } from "../../dto/create-transaction.dto";
+import { FilterTransactionsDto } from "../../dto/filter-transactions.dto";
+import { TransactionAddedEvent } from "../../events/transaction-added.event";
+import { UpdatePlayersBalanceEvent } from "../../events/update-players-balance.event";
 import { GameService } from "../game/game.service";
 import { PlayerService } from "../player/player.service";
-import { FilterTransactionsDto } from "../../dto/filter-transactions.dto";
-import { isNullOrEmptyOrUndefined } from "@common/helpers/is-null-or-undefined";
 
 @Injectable()
 export class TransactionService {
@@ -13,10 +16,11 @@ export class TransactionService {
     private readonly playerService: PlayerService,
     private readonly gameService: GameService,
     private readonly transactionRepository: TransactionRepository,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   public async addPlayerTransaction(data: CreateTransactionDto, playerId: number, ip?: string): Promise<Transaction> {
-    const transaction = await this.transactionRepository.create({
+    const transaction = (await this.transactionRepository.create({
       data: {
         amount: data.amount,
         operation: data.operation,
@@ -26,7 +30,13 @@ export class TransactionService {
       include: {
         player: true,
       },
-    });
+    })) as Prisma.TransactionGetPayload<{ include: { player: true } }>;
+
+    this.eventEmitter.emitAsync(TransactionAddedEvent.NAME, new TransactionAddedEvent(transaction));
+    this.eventEmitter.emitAsync(
+      UpdatePlayersBalanceEvent.NAME,
+      new UpdatePlayersBalanceEvent(transaction.player.gameId),
+    );
 
     return transaction;
   }
