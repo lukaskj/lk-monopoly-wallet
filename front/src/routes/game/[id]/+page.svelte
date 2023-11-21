@@ -8,7 +8,7 @@
   import { gamePasswordStore } from "$lib/stores/game-password.store";
   import { layoutTitleStore } from "$lib/stores/layout-title.store";
   import { loadingStore } from "$lib/stores/loading.store";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import type { PageData } from "./$types";
   import type { TGameData } from "./types";
 
@@ -47,6 +47,8 @@
 
     reloadData();
     clearPlayerSelections && clearPlayerSelections();
+    amount = 0;
+    selectedPlayers = [];
   }
 
   async function reloadData() {
@@ -58,8 +60,6 @@
     if (data.getTransactions) {
       transactions = await data.getTransactions(data.id);
     }
-    amount = 0;
-    selectedPlayers = [];
   }
 
   async function endGame() {
@@ -69,10 +69,26 @@
     }
   }
 
+  let updateLoopId: NodeJS.Timeout | null = null;
+
+  function startUpdateLoop() {
+    updateLoopId = setInterval(() => {
+      if (!hasPassword) {
+        reloadData();
+      }
+    }, 3000);
+  }
+
   onMount(() => {
     layoutTitleStore.set(game.name);
     appbarTrailStore.set(GameTrailButtons);
     appbarTrailParamsStore.set(game);
+
+    startUpdateLoop();
+  });
+
+  onDestroy(() => {
+    updateLoopId && clearInterval(updateLoopId);
   });
 
   $: hasPassword = !game.hasPassword || (game.hasPassword && $gamePasswordStore[game.id]);
