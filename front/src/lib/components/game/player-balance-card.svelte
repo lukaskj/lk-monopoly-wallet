@@ -18,7 +18,6 @@
   }
 
   const fontColorFromPlayerBgColor = fontColorFromBgColor(player.color ?? "#FFFFFF");
-  console.log({ fontColorFromPlayerBgColor, color: player.color });
 </script>
 
 <div
