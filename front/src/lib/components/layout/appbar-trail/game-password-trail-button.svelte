@@ -17,6 +17,6 @@
 
 <style type="postcss">
   .icon-lock-check {
-    @apply text-green-600;
+    @apply text-success-500-400-token;
   }
 </style>
