@@ -2,6 +2,7 @@
   import type { Game } from "$lib/dto";
   import { onMount } from "svelte";
   import GamePasswordTrailButton from "../game-password-trail-button.svelte";
+  import { loadingStore } from "$lib/stores/loading.store";
 
   export let param: Game;
 
@@ -10,6 +11,7 @@
   });
 
   function refreshGame() {
+    loadingStore.set(true);
     location.reload();
   }
 </script>
