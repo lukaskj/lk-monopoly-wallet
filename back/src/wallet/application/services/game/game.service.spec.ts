@@ -122,7 +122,7 @@ describe("GameService", () => {
   });
 
   describe("finishGame", () => {
-    it("should successfully finish a game", async () => {
+    it("should successfully finish a game with right password", async () => {
       // given
       const mockGameDto = _fixtureCreateGameDto();
 
@@ -141,12 +141,14 @@ describe("GameService", () => {
       const transactionRepository = mock<TransactionRepository>();
 
       const service = new GameService(gameRepository, playerRepository, transactionRepository, playerService);
+      const $getGameById = jest.spyOn(service, "getGameById").mockResolvedValueOnce(mockGame);
 
       // when
-      const result = await service.finishGame(mockGame.id);
+      const result = await service.finishGame(mockGame.id, mockGameDto.password);
 
       // then
       expect(result.id).toEqual(mockGame.id);
+      expect($getGameById).toHaveBeenCalledWith(mockGame.id);
       expect(gameRepository.update).toHaveBeenCalledWith({
         data: {
           finished: true,
@@ -158,6 +160,76 @@ describe("GameService", () => {
           players: true,
         },
       });
+    });
+
+    it("should successfully finish a game with empty password", async () => {
+      // given
+      const mockGameDto = _fixtureCreateGameDto();
+
+      const mockGame = _fixtureGame({
+        name: mockGameDto.name,
+        password: "",
+        creatorIp: mockGameDto.creatorIp,
+      });
+
+      const playerService = mock<PlayerService>();
+
+      const gameRepository = mock<GameRepository>();
+      gameRepository.update.mockResolvedValueOnce(mockGame);
+
+      const playerRepository = mock<PlayerRepository>();
+      const transactionRepository = mock<TransactionRepository>();
+
+      const service = new GameService(gameRepository, playerRepository, transactionRepository, playerService);
+      const $getGameById = jest.spyOn(service, "getGameById").mockResolvedValueOnce(mockGame);
+
+      // when
+      const result = await service.finishGame(mockGame.id, mockGameDto.password);
+
+      // then
+      expect(result.id).toEqual(mockGame.id);
+      expect($getGameById).toHaveBeenCalledWith(mockGame.id);
+      expect(gameRepository.update).toHaveBeenCalledWith({
+        data: {
+          finished: true,
+        },
+        where: {
+          id: mockGame.id,
+        },
+        include: {
+          players: true,
+        },
+      });
+    });
+
+    it("should throw if trying to finish a game with wrong password", async () => {
+      // given
+      const mockGameDto = _fixtureCreateGameDto();
+
+      const mockGame = _fixtureGame({
+        name: mockGameDto.name,
+        password: "---a",
+        creatorIp: mockGameDto.creatorIp,
+      });
+
+      const playerService = mock<PlayerService>();
+
+      const gameRepository = mock<GameRepository>();
+      gameRepository.update.mockResolvedValueOnce(mockGame);
+
+      const playerRepository = mock<PlayerRepository>();
+      const transactionRepository = mock<TransactionRepository>();
+
+      const service = new GameService(gameRepository, playerRepository, transactionRepository, playerService);
+      const $getGameById = jest.spyOn(service, "getGameById").mockResolvedValueOnce(mockGame);
+
+      // when
+      const result = service.finishGame(mockGame.id, mockGameDto.password);
+
+      // then
+      await expect(result).rejects.toThrow(UnauthorizedException);
+      expect($getGameById).toHaveBeenCalledWith(mockGame.id);
+      expect(gameRepository.update).not.toHaveBeenCalled();
     });
   });
 

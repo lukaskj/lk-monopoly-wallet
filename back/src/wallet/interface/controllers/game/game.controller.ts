@@ -1,9 +1,10 @@
+import { AuthToken } from "@common/decorators/auth-token.decorator";
 import { RealIP } from "@common/decorators/real-ip.decorator";
 import { SerializeTo } from "@common/decorators/serialize-to";
 import { isNullOrEmptyOrUndefined } from "@common/helpers/is-null-or-undefined";
 import { Pagination } from "@common/pagination/pagination";
 import { NotEmptyPipe } from "@common/pipes/not-empty.pipe";
-import { Body, Controller, Delete, Get, Headers, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
 import { GameService } from "../../../application/services/game/game.service";
 import { PlayerService } from "../../../application/services/player/player.service";
 import { TransactionService } from "../../../application/services/transaction/transaction.service";
@@ -49,8 +50,8 @@ export class GameController {
 
   @Post(":id/finish")
   @SerializeTo(GameViewModel)
-  public async finishGame(@Param("id") id: number) {
-    return await this.gameService.finishGame(id);
+  public async finishGame(@Param("id") id: number, @AuthToken() password: string) {
+    return await this.gameService.finishGame(id, password);
   }
 
   @Post(":id/player")
@@ -65,7 +66,7 @@ export class GameController {
   }
 
   @Delete(":id")
-  public async deleteGame(@Param("id") id: number, @Headers("Authorization") password: string = "") {
+  public async deleteGame(@Param("id") id: number, @AuthToken() password: string) {
     return await this.gameService.deleteGame(id, password);
   }
 

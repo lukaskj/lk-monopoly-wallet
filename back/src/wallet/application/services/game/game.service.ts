@@ -106,7 +106,13 @@ export class GameService {
     return await Promise.all([games, total]);
   }
 
-  public async finishGame(id: number): Promise<Game> {
+  public async finishGame(id: number, password?: string): Promise<Game> {
+    const game = await this.getGameById(id);
+
+    if (!isNullOrEmptyOrUndefined(game.password) && game.password !== password) {
+      throw new UnauthorizedException("Wrong password");
+    }
+
     return await this.gameRepository.update({
       data: {
         finished: true,
