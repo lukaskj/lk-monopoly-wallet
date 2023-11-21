@@ -8,7 +8,6 @@
   import { loadingStore } from "$lib/stores/loading.store";
   import { Paginator, type PaginationSettings } from "@skeletonlabs/skeleton";
   import { onMount } from "svelte";
-  $layoutTitleStore = "Partidas";
 
   let pageData: PaginatedData<Game> = {
     data: [],
@@ -44,6 +43,7 @@
   }
 
   onMount(() => {
+    $layoutTitleStore = "Partidas";
     getGames(1);
     appbarTrailStore.set(NewGameTrailButton);
     appbarTrailParamsStore.set(null);
