@@ -1,3 +1,4 @@
+import { goto } from "$app/navigation";
 import { Game, PaginatedData, Transaction, type PlayerBalance } from "$lib/dto";
 import { ApiProxy } from "$lib/request/api-proxy";
 import { loadingStore } from "$lib/stores/loading.store";
