@@ -17,8 +17,8 @@
 </script>
 
 {#if param}
-  <button class="btn btn-icon icon:refresh" on:click={refreshGame}> </button>
   {#if param.hasPassword}
     <GamePasswordTrailButton param={param.id} />
   {/if}
+  <button class="btn btn-icon icon:refresh" on:click={refreshGame}> </button>
 {/if}
