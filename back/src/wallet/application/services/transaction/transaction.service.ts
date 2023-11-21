@@ -32,7 +32,10 @@ export class TransactionService {
       },
     })) as Prisma.TransactionGetPayload<{ include: { player: true } }>;
 
-    this.eventEmitter.emitAsync(TransactionAddedEvent.NAME, new TransactionAddedEvent(transaction));
+    this.eventEmitter.emitAsync(
+      TransactionAddedEvent.NAME,
+      new TransactionAddedEvent(transaction, transaction.player.gameId),
+    );
     this.eventEmitter.emitAsync(
       UpdatePlayersBalanceEvent.NAME,
       new UpdatePlayersBalanceEvent(transaction.player.gameId),

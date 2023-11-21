@@ -3,5 +3,8 @@ import { Transaction } from "@prisma/client";
 export class TransactionAddedEvent {
   public static NAME = "transaction-added";
 
-  constructor(public transaction: Transaction) {}
+  constructor(
+    public transaction: Transaction,
+    public gameId: number,
+  ) {}
 }

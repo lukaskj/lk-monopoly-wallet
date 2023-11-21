@@ -20,23 +20,19 @@ export class GameInfoWsGatewayGateway {
       excludeExtraneousValues: true,
     });
 
-    this.server.emit(TransactionAddedEvent.NAME, viewModel);
+    // transaction-added-[gameId]
+    this.server.emit(TransactionAddedEvent.NAME + "-" + payload.gameId, viewModel);
   }
 
   @OnEvent(UpdatePlayersBalanceEvent.NAME)
   async sendPlayerBalances(payload: UpdatePlayersBalanceEvent): Promise<void> {
     const playerBalances = await this.gameRepository.gamePlayersBalance(payload.gameId);
 
-    console.log("ASAAAAAAAAAAAA", { playerBalances, payload });
-    console.log("ASAAAAAAAAAAAA", { playerBalances, payload });
-    console.log("ASAAAAAAAAAAAA", { playerBalances, payload });
-    console.log("ASAAAAAAAAAAAA", { playerBalances, payload });
-    console.log("ASAAAAAAAAAAAA", { playerBalances, payload });
-
     const viewModel = plainToInstance(PlayerBalanceViewModel, playerBalances, {
       excludeExtraneousValues: true,
     });
 
-    this.server.emit(UpdatePlayersBalanceEvent.NAME, viewModel);
+    // update-players-balance-[gameId]
+    this.server.emit(UpdatePlayersBalanceEvent.NAME + "-" + payload.gameId, viewModel);
   }
 }
