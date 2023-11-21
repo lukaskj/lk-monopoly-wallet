@@ -99,7 +99,7 @@
             <input class="input" type="color" bind:value={player.color} />
           </span>
           <span class="flex flex-row w-full justify-between border-2 border-dashed">
-            <span>{player.name} {player.color}</span>
+            <span>{player.name}</span>
             <button class="btn btn-sm icon:close text-red-900" on:click={() => removePlayer(player)}></button>
           </span>
         </li>
