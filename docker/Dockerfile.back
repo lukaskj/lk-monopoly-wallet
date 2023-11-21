@@ -2,7 +2,6 @@ FROM node:20.9.0-alpine as build
 WORKDIR /build
 COPY ./back .
 ENV DB_DATABASE=file:/temp/db.db
-RUN npm i -g prisma@5.5.2
 RUN npm i -g pnpm && \
     pnpm i && \
     pnpm build:prod
