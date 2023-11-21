@@ -35,8 +35,8 @@
   </div>
   <div class="n-key grid grid-cols-3 grid-rows-3 gap-1 select-none">
     <button on:click={() => addAmount(10)}>10</button>
+    <button on:click={() => addAmount(20)}>20</button>
     <button on:click={() => addAmount(50)}>50</button>
-    <button on:click={() => addAmount(100)}>100</button>
     <button on:click={() => addAmount(100)}>100</button>
     <button on:click={() => addAmount(500)}>500</button>
     <button on:click={() => addAmount(1000)}>1000</button>
