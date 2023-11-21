@@ -45,10 +45,13 @@ async function getTransactions(id: number): Promise<PaginatedData<Transaction>> 
   }
 }
 
-async function endGame(id: number) {
+async function endGame(id: number, password?: string) {
   try {
     loadingStore.set(true);
-    const response = await new ApiProxy().endpoint(`/game/${id}/finish`).post();
+    const response = await new ApiProxy()
+      .setHeader("Authorization", password ?? "")
+      .endpoint(`/game/${id}/finish`)
+      .post();
     await goto("/");
     return response;
   } finally {

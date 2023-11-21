@@ -64,7 +64,7 @@
   async function endGame() {
     const response = confirm("Deseja mesmo finalizar esse jogo?");
     if (response && data.endGame) {
-      await data.endGame(game.id);
+      await data.endGame(game.id, $gamePasswordStore[game.id]);
     }
   }
 
@@ -86,6 +86,8 @@
     <GameTransactions transactions={transactions.data} />
   </div>
   {#if hasPassword}
-    <button class="btn w-full variant-filled-error" on:click={endGame}>Finalizar</button>
+    <div>
+      <button class="btn w-full variant-filled-error mt-8" on:click={endGame}>Finalizar</button>
+    </div>
   {/if}
 </div>
