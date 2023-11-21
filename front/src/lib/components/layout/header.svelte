@@ -19,7 +19,7 @@
 <AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" shadow="shadow-2xl" slotTrail="place-content-end">
   <svelte:fragment slot="lead">
     {#if $page.url.pathname !== "/"}
-      <button class="lg:hidden btn btn-sm icon:arrow-left" on:click={goBack}> </button>
+      <a class="lg:hidden btn btn-sm icon:arrow-left" href="/"> </a>
     {/if}
   </svelte:fragment>
   {$layoutTitleStore}
