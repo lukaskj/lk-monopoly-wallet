@@ -6,15 +6,15 @@
   export let player: PlayerBalance;
   export let selected: boolean = false;
   export let selectedIndex: number = 0;
-  export let onSelect: (player: PlayerBalance, selected: boolean) => void;
+  export let onSelect: (player: PlayerBalance) => void;
   export const clear: () => void = () => {
     selected = false;
     selectedIndex = 0;
   };
 
   function toggleSelected() {
-    selected = !selected;
-    onSelect && onSelect(player, selected);
+    // selected = !selected;
+    onSelect && onSelect(player);
   }
 
   const fontColorFromPlayerBgColor = fontColorFromBgColor(player.color ?? "#FFFFFF");

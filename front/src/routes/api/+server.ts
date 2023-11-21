@@ -1,9 +1,9 @@
 import "reflect-metadata";
-import { env } from "$env/dynamic/private";
 import { apiEndpoint } from "$lib/request/api-endpoint";
 import type { AnyType } from "$lib/types";
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
+import { ServerConfig } from "$lib/backend/server-config";
 
 type TRequestData = {
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
   const body = requestData.body;
   const headers = requestData.headers;
 
-  const fullUrl = apiEndpoint(env.BACKEND_BASE_URL, endpoint, queryParams);
+  const fullUrl = apiEndpoint(ServerConfig.backendBaseUrl(), endpoint, queryParams);
 
   const response = await fetch(fullUrl, {
     method,

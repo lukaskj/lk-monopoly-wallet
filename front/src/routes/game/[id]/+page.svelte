@@ -24,6 +24,7 @@
   function onPlayerSelect(player: PlayerBalance, selected: boolean) {
     confirmEnabled = selectedPlayers.length > 0 && amount !== 0;
   }
+
   $: {
     confirmEnabled = selectedPlayers.length > 0 && amount !== 0;
   }
@@ -79,7 +80,12 @@
 
 <div class="flex flex-col h-full justify-between">
   <div class="space-y-4">
-    <PlayerBalancesContainer {players} {selectedPlayers} {onPlayerSelect} bind:clearSelection={clearPlayerSelections} />
+    <PlayerBalancesContainer
+      {players}
+      bind:selectedPlayers
+      {onPlayerSelect}
+      bind:clearSelection={clearPlayerSelections}
+    />
     {#if hasPassword}
       <TransactionKeyboard bind:value={amount} {confirmEnabled} onConfirm={onAmountConfirm} />
     {/if}
