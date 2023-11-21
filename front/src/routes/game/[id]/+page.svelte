@@ -16,6 +16,7 @@
   let { game, players, transactions } = data.gameData as TGameData;
 
   let amount = 0;
+  let clearPlayerSelections: () => void;
 
   $: selectedPlayers = [] as PlayerBalance[];
   $: confirmEnabled = false;
@@ -60,19 +61,31 @@
     selectedPlayers = [];
   }
 
-  let clearPlayerSelections: () => void;
+  async function endGame() {
+    const response = confirm("Deseja mesmo finalizar esse jogo?");
+    if (response && data.endGame) {
+      await data.endGame(game.id);
+    }
+  }
 
   onMount(() => {
     layoutTitleStore.set(game.name);
     appbarTrailStore.set(GameTrailButtons);
     appbarTrailParamsStore.set(game);
   });
+
+  $: hasPassword = !game.hasPassword || (game.hasPassword && $gamePasswordStore[game.id]);
 </script>
 
-<div class="space-y-4">
-  <PlayerBalancesContainer {players} {selectedPlayers} {onPlayerSelect} bind:clearSelection={clearPlayerSelections} />
-  {#if !game.hasPassword || (game.hasPassword && $gamePasswordStore[game.id])}
-    <TransactionKeyboard bind:value={amount} {confirmEnabled} onConfirm={onAmountConfirm} />
+<div class="flex flex-col h-full justify-between">
+  <div class="space-y-4">
+    <PlayerBalancesContainer {players} {selectedPlayers} {onPlayerSelect} bind:clearSelection={clearPlayerSelections} />
+    {#if hasPassword}
+      <TransactionKeyboard bind:value={amount} {confirmEnabled} onConfirm={onAmountConfirm} />
+    {/if}
+    <GameTransactions transactions={transactions.data} />
+  </div>
+  {#if hasPassword}
+    <button class="btn w-full variant-filled-error" on:click={endGame}>Finalizar</button>
   {/if}
-  <GameTransactions transactions={transactions.data} />
 </div>

@@ -44,6 +44,17 @@ async function getTransactions(id: number): Promise<PaginatedData<Transaction>> 
   }
 }
 
+async function endGame(id: number) {
+  try {
+    loadingStore.set(true);
+    const response = await new ApiProxy().endpoint(`/game/${id}/finish`).post();
+    await goto("/");
+    return response;
+  } finally {
+    loadingStore.set(false);
+  }
+}
+
 async function createPlayerTransaction(player: PlayerBalance, amount: number, operation: number, password?: string) {
   try {
     loadingStore.set(true);
@@ -71,5 +82,12 @@ export const load = (async ({ params, fetch }) => {
 
   const gameData = getGameData(gameId);
 
-  return { id: gameId, getBalance, getTransactions, gameData, createPlayerTransaction };
+  return {
+    id: gameId,
+    getBalance,
+    getTransactions,
+    gameData,
+    createPlayerTransaction,
+    endGame,
+  };
 }) satisfies PageLoad;

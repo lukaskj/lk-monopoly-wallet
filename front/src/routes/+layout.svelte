@@ -39,7 +39,7 @@
   <!-- (sidebarRight) -->
   <!-- (pageHeader) -->
   <!-- Router Slot -->
-  <div class="p-4">
+  <div class="p-4 h-full">
     <slot />
   </div>
   <!-- ---- / ---- -->
