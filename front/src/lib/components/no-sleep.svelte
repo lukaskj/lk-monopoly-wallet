@@ -15,17 +15,18 @@
   });
 
   afterUpdate(async () => {
-    try {
-      while (noSleep && !noSleep.isEnabled) {
+    while (noSleep && !enabled) {
+      try {
         await sleep(1000);
-        if (!noSleep.isEnabled) {
+        if (!enabled) {
           document && document.body && document.body.click();
+          await sleep(500);
           await noSleep.enable();
+          enabled = noSleep.isEnabled;
         }
-        enabled = noSleep.isEnabled;
-      } 
-    } catch (error) {
-      console.error(error);
+      } catch (error) {
+        console.error(error);
+      }
     }
   });
 </script>
