@@ -3,13 +3,14 @@
   // import "../theme.postcss";
   // This contains the bulk of Skeletons required styles:
   import Header from "$lib/components/layout/header.svelte";
+  import LoadingBar from "$lib/components/loading-bar.svelte";
+  import Navigation from "$lib/components/navigation.svelte";
+  import NoSleep from "$lib/components/no-sleep.svelte";
+  import { Notification } from "$lib/notification";
+  import { loadingStore } from "$lib/stores/loading.store";
   import { AppShell, Drawer, Toast, getToastStore, initializeStores } from "@skeletonlabs/skeleton";
   import "virtual:uno.css";
   import "../app.postcss";
-  import { Notification } from "$lib/notification";
-  import Navigation from "$lib/components/navigation.svelte";
-  import LoadingBar from "$lib/components/loading-bar.svelte";
-  import { loadingStore } from "$lib/stores/loading.store";
 
   initializeStores();
 
@@ -43,6 +44,11 @@
     <slot />
   </div>
   <!-- ---- / ---- -->
-  <svelte:fragment slot="pageFooter"><span class="pl-4 pr-4">LK Monopoly Wallet</span></svelte:fragment>
+  <svelte:fragment slot="pageFooter">
+    <div class="flex flex-row justify-between pl-4 pr-4">
+      <span class=""> LK Monopoly Wallet</span>
+      <NoSleep />
+    </div>
+  </svelte:fragment>
   <!-- (footer) -->
 </AppShell>
