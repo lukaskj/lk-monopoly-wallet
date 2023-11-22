@@ -3,7 +3,7 @@
   import NoSleep from "nosleep.js";
   import { afterUpdate, onMount } from "svelte";
 
-  let noSleep: NoSleep = { isEnabled: false, enable: () => {} } as NoSleep;
+  let noSleep: NoSleep | null = null;
   let enabled = false;
 
   onMount(() => {
@@ -16,12 +16,14 @@
 
   afterUpdate(async () => {
     try {
-      await sleep(1000);
-      document && document.body && document.body.click();
-      if (!noSleep.isEnabled) {
-        await noSleep.enable();
-      }
-      enabled = noSleep.isEnabled;
+      while (noSleep && !noSleep.isEnabled) {
+        await sleep(1000);
+        if (!noSleep.isEnabled) {
+          document && document.body && document.body.click();
+          await noSleep.enable();
+        }
+        enabled = noSleep.isEnabled;
+      } 
     } catch (error) {
       console.error(error);
     }
