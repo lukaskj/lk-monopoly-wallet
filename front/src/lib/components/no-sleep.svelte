@@ -33,6 +33,6 @@
 
 <div>
   {#if enabled}
-    .
+    *
   {/if}
 </div>
