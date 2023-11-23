@@ -27,3 +27,9 @@ services:
     volumes:
       - ./scripts:/app/scripts
     command: ['node', '/app/index.js']
+
+
+networks:
+  default:
+    external: true
+    name: proxy

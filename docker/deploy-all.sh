@@ -1,2 +1,3 @@
 #!/bin/sh
-docker compose up -d --no-deps --build
+. ./deploy-back.sh
+. ./deploy-front.sh

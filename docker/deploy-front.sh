@@ -1,2 +1,5 @@
 #!/bin/sh
-docker compose up -d --no-deps --build monopoly-wallet-frontend
+
+docker compose build
+docker compose down monopoly-wallet-frontend
+docker compose up -d monopoly-wallet-frontend
