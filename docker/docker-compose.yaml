@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   monopoly-wallet-backend:
     image: monopoly-wallet-backend
