@@ -2,8 +2,8 @@ FROM node:20.9.0-alpine as build
 WORKDIR /build
 COPY ./back .
 ENV DB_DATABASE=file:/temp/db.db
-RUN npm i -g pnpm && \
-    pnpm i && \
+RUN corepack enable && \
+    pnpm i --frozen-lockfile && \
     pnpm build:prod
 
 
