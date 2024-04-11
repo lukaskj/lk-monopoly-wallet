@@ -7,12 +7,13 @@ services:
     environment:
       - DB_TYPE=sqlite
       - DB_DATABASE=file:/app/database/db.db
-#    ports:
-#      - 3001:3000
+    # ports:
+    #  - 3001:3000
     volumes:
       - ./temp:/app/database
       - ./scripts:/app/scripts
-    command: ['sh', '/app/scripts/start-back.sh']
+    command: ["sh", "/app/scripts/start-back.sh"]
+
   monopoly-wallet-frontend:
     image: monopoly-wallet-frontend
     build:
@@ -20,12 +21,11 @@ services:
       dockerfile: ./docker/Dockerfile.front
     environment:
       - BACKEND_BASE_URL=http://monopoly-wallet-backend:3000/v1
-#    ports:
-#      - 5000:4000
+    # ports:
+    #  - 5000:4000
     volumes:
       - ./scripts:/app/scripts
-    command: ['node', '/app/index.js']
-
+    command: ["node", "/app/index.js"]
 
 networks:
   default:
