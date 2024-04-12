@@ -8,6 +8,8 @@ import { GameRepository, PlayerRepository, TransactionRepository } from "./infra
 import { GameTransactionsController } from "./interface/controllers/game/game-transactions.controller";
 import { GameController } from "./interface/controllers/game/game.controller";
 import { PlayerController } from "./interface/controllers/player/player.controller";
+import { APP_GUARD } from "@nestjs/core";
+import { ThrottlerGuard } from "@nestjs/throttler";
 
 @Module({
   imports: [DatabaseModule],
@@ -20,6 +22,10 @@ import { PlayerController } from "./interface/controllers/player/player.controll
     GameRepository,
     TransactionRepository,
     GameInfoWsGatewayGateway,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class WalletModule {}

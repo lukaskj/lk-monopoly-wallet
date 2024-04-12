@@ -35,6 +35,7 @@
     "@nestjs/event-emitter": "^2.0.3",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/platform-socket.io": "^10.2.10",
+    "@nestjs/throttler": "^5.1.2",
     "@nestjs/websockets": "^10.2.10",
     "@prisma/client": "^5.5.2",
     "@supercharge/request-ip": "^1.2.0",

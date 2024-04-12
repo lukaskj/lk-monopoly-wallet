@@ -1,14 +1,15 @@
 import { faker } from "@faker-js/faker";
 import { UnauthorizedException } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { _fixtureGame } from "@test/fixtures/game.fixture";
 import { _fixturePlayer } from "@test/fixtures/player.fixture";
 import { _fixtureTransaction } from "@test/fixtures/transaction.fixture";
 import { mock } from "jest-mock-extended";
 import { TransactionRepository } from "../../../infrastructure/repositories";
+import { FilterTransactionsDto } from "../../dto/filter-transactions.dto";
 import { GameService } from "../game/game.service";
 import { PlayerService } from "../player/player.service";
 import { TransactionService } from "./transaction.service";
-import { FilterTransactionsDto } from "../../dto/filter-transactions.dto";
 
 describe("TransactionService", () => {
   describe("addPlayerTransaction", () => {
@@ -17,7 +18,10 @@ describe("TransactionService", () => {
       const mockPlayer = _fixturePlayer();
       const mockTransaction = _fixtureTransaction({
         playerId: mockPlayer.id,
-      });
+        player: {
+          gameId: mockPlayer.id,
+        },
+      } as any);
       const createTransactionDto = {
         amount: mockTransaction.amount,
         operation: mockTransaction.operation,
@@ -28,8 +32,9 @@ describe("TransactionService", () => {
 
       const transactionRepository = mock<TransactionRepository>();
       transactionRepository.create.mockResolvedValueOnce(mockTransaction);
+      const eventEmitter = mock<EventEmitter2>();
 
-      const service = new TransactionService(playerService, gameService, transactionRepository);
+      const service = new TransactionService(playerService, gameService, transactionRepository, eventEmitter);
 
       // when
       const result = await service.addPlayerTransaction(
@@ -82,8 +87,9 @@ describe("TransactionService", () => {
       gameService.getGameById.mockResolvedValueOnce(mockGame);
 
       const transactionRepository = mock<TransactionRepository>();
+      const eventEmitter = mock<EventEmitter2>();
 
-      const service = new TransactionService(playerService, gameService, transactionRepository);
+      const service = new TransactionService(playerService, gameService, transactionRepository, eventEmitter);
 
       const $addPlayerTransaction = jest.spyOn(service, "addPlayerTransaction").mockResolvedValueOnce(mockTransaction);
 
@@ -129,8 +135,9 @@ describe("TransactionService", () => {
       gameService.getGameById.mockResolvedValueOnce(mockGame);
 
       const transactionRepository = mock<TransactionRepository>();
+      const eventEmitter = mock<EventEmitter2>();
 
-      const service = new TransactionService(playerService, gameService, transactionRepository);
+      const service = new TransactionService(playerService, gameService, transactionRepository, eventEmitter);
 
       const $addPlayerTransaction = jest.spyOn(service, "addPlayerTransaction").mockResolvedValueOnce(mockTransaction);
 
@@ -176,8 +183,9 @@ describe("TransactionService", () => {
       gameService.getGameById.mockResolvedValueOnce(mockGame);
 
       const transactionRepository = mock<TransactionRepository>();
+      const eventEmitter = mock<EventEmitter2>();
 
-      const service = new TransactionService(playerService, gameService, transactionRepository);
+      const service = new TransactionService(playerService, gameService, transactionRepository, eventEmitter);
       const $addPlayerTransaction = jest.spyOn(service, "addPlayerTransaction").mockResolvedValueOnce(mockTransaction);
 
       // when
@@ -227,8 +235,9 @@ describe("TransactionService", () => {
       const transactionRepository = mock<TransactionRepository>();
       transactionRepository.findMany.mockResolvedValueOnce(transactionList);
       transactionRepository.count.mockResolvedValueOnce(transactionList.length);
+      const eventEmitter = mock<EventEmitter2>();
 
-      const service = new TransactionService(playerService, gameService, transactionRepository);
+      const service = new TransactionService(playerService, gameService, transactionRepository, eventEmitter);
 
       // when
       const result = await service.listTransactions(mockFilterDto);
