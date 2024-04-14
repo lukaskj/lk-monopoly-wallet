@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
+import { getClientIp } from "@supercharge/request-ip";
 import { Observable, tap } from "rxjs";
 
 @Injectable()
@@ -14,6 +15,8 @@ export class LoggingInterceptor implements NestInterceptor {
       nBody.password = null;
     }
 
+    const ip = getClientIp(req);
+
     console.log("[-] Request ---------------------------");
     console.log({
       originalUrl,
@@ -22,6 +25,7 @@ export class LoggingInterceptor implements NestInterceptor {
       query,
       body: nBody,
       headers,
+      ip,
     });
 
     console.log("[-] Response ---------------------------");
