@@ -1,6 +1,7 @@
 services:
   monopoly-wallet-backend:
     image: monopoly-wallet-backend
+    container_name: monopoly-wallet-backend
     build:
       context: ../
       dockerfile: ./docker/Dockerfile.back
@@ -16,6 +17,7 @@ services:
 
   monopoly-wallet-frontend:
     image: monopoly-wallet-frontend
+    container_name: monopoly-wallet-frontend
     build:
       context: ../
       dockerfile: ./docker/Dockerfile.front
